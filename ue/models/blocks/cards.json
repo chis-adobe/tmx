@@ -13,7 +13,30 @@
       "filter": "cards"
     }
   ],
-  "models": [],
+  "models": [
+    {
+      "id": "cards",
+      "fields": [
+        {
+          "component": "select",
+          "name": "classes",
+          "label": "Style",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Teaser",
+              "value": "teaser"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "filters": [
     {
       "id": "cards",

@@ -9,6 +9,7 @@ import {
   decorateMain,
   ensureDOMPurify,
   moveInstrumentation,
+  resolveContentPath,
 } from '../../scripts/scripts.js';
 
 import {
@@ -25,10 +26,12 @@ import {
 export async function loadFragment(path) {
   if (path && path.startsWith('/') && !path.startsWith('//')) {
     await ensureDOMPurify();
-    const resp = await fetch(`${path}.plain.html`);
+    const resp = await fetch(`${resolveContentPath(path)}.plain.html`);
     if (resp.ok) {
       const main = document.createElement('main');
       main.innerHTML = window.DOMPurify.sanitize(await resp.text(), DOMPURIFY);
+      // a fragment's own page metadata (e.g. robots: noindex) must not render inside the host page
+      main.querySelectorAll(':scope > div > .metadata').forEach((meta) => meta.remove());
 
       // reset base path for media to fragment base (whitelist attr to avoid prototype pollution)
       const resetAttributeBase = (tag, attr) => {

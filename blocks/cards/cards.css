@@ -27,3 +27,76 @@
   aspect-ratio: var(--cards-image-aspect-ratio); /* @boilerplate */
   object-fit: var(--cards-image-object-fit); /* @boilerplate */
 }
+
+/* teaser variant: full-width image + text rows, alternating sides, links rendered as pills */
+.cards.teaser > ul {
+  grid-template-columns: 1fr;
+  gap: var(--cards-teaser-gap);
+}
+
+.cards.teaser > ul > li {
+  display: grid;
+  gap: var(--spacing-xl);
+  align-items: center;
+  border: 0;
+  background-color: transparent;
+}
+
+.cards.teaser .cards-card-image {
+  margin: var(--cards-teaser-frame-offset) var(--cards-teaser-frame-offset) 0 0;
+  box-shadow: var(--cards-teaser-frame-offset) calc(-1 * var(--cards-teaser-frame-offset)) 0 var(--cards-teaser-frame-color);
+}
+
+.cards.teaser > ul > li img {
+  aspect-ratio: 3 / 2;
+}
+
+.cards.teaser .cards-card-body {
+  margin: 0;
+  text-align: center;
+}
+
+.cards.teaser .cards-card-body h3 {
+  margin-top: 0;
+  font-size: var(--heading-font-size-m);
+}
+
+.cards.teaser .cards-card-body p {
+  margin: var(--spacing-s) 0 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.cards.teaser .cards-card-body a {
+  display: inline-block;
+  margin: var(--spacing-xs) 4px 0;
+  border-radius: 2em;
+  padding: 6px 18px;
+  background-color: var(--cards-teaser-link-background);
+  color: var(--cards-teaser-link-color);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.cards.teaser .cards-card-body a:hover,
+.cards.teaser .cards-card-body a:focus-visible {
+  background-color: var(--cards-teaser-link-hover-background);
+}
+
+@media (width >= 900px) {
+  .cards.teaser > ul > li {
+    grid-template-columns: 2fr 3fr;
+    gap: var(--spacing-xxl) 64px;
+  }
+
+  .cards.teaser > ul > li:nth-child(even) {
+    grid-template-columns: 3fr 2fr;
+  }
+
+  .cards.teaser > ul > li:nth-child(even) .cards-card-image {
+    order: 2;
+    margin: var(--cards-teaser-frame-offset) 0 0 var(--cards-teaser-frame-offset);
+    box-shadow: calc(-1 * var(--cards-teaser-frame-offset)) calc(-1 * var(--cards-teaser-frame-offset)) 0 var(--cards-teaser-frame-color);
+  }
+}

@@ -27,11 +27,12 @@
   scroll-snap-align: start; /* @boilerplate */
   display: flex; /* @boilerplate */
   flex-direction: column; /* @boilerplate */
-  align-items: flex-start; /* @boilerplate */
-  justify-content: center; /* @boilerplate */
+  align-items: center;
+  justify-content: center;
   position: relative; /* @boilerplate */
   width: 100%; /* @boilerplate */
-  min-height: min(50vw, calc(100dvh - var(--header-height))); /* @boilerplate */
+  min-height: var(--carousel-slide-min-height);
+  text-align: center;
 }
 
 .carousel .carousel-slide:has(.carousel-slide-content[data-align='center']) { /* @boilerplate */
@@ -61,6 +62,21 @@
   background-color: var(--carousel-content-background); /* @boilerplate */
   position: relative; /* @boilerplate */
   width: var(--slide-content-width, auto); /* @boilerplate */
+  max-width: var(--carousel-content-max-width);
+}
+
+.carousel .carousel-slide .carousel-slide-content :is(h1, h2, h3) {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--carousel-content-color);
+  font-size: var(--carousel-title-size);
+}
+
+.carousel .carousel-slide .carousel-slide-content p {
+  margin: 0 0 var(--spacing-xs);
+}
+
+.carousel .carousel-slide .carousel-slide-content .button-wrapper {
+  margin-top: var(--spacing-m);
 }
 
 .carousel .carousel-slide-indicators { /* @boilerplate */
@@ -69,7 +85,12 @@
   justify-content: center; /* @boilerplate */
   gap: var(--carousel-indicators-gap); /* @boilerplate */
   padding: var(--carousel-indicators-padding); /* @boilerplate */
-  background-color: var(--light-color); /* @boilerplate */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background-color: transparent;
   line-height: 0; /* @boilerplate */
 }
 
@@ -78,8 +99,9 @@
   height: var(--carousel-indicator-size); /* @boilerplate */
   margin: 0; /* @boilerplate */
   padding: 0; /* @boilerplate */
-  border-radius: 50%; /* @boilerplate */
-  background-color: var(--carousel-indicator-background); /* @boilerplate */
+  border: 0;
+  border-radius: 2px;
+  background-color: var(--carousel-indicator-background);
   transition: background-color var(--carousel-transition-duration); /* @boilerplate */
 }
 
@@ -111,6 +133,8 @@
   padding: 0; /* @boilerplate */
   background-color: var(--carousel-nav-button-background); /* @boilerplate */
   transition: background-color var(--carousel-transition-duration); /* @boilerplate */
+  border: 0;
+  color: #fff;
 }
 
 .carousel .carousel-navigation-buttons button:hover,
@@ -144,7 +168,7 @@
   }
 
   .carousel .carousel-slide .carousel-slide-content { /* @boilerplate */
-    --slide-content-width: calc((100% - 184px) / 2); /* @boilerplate */
+    --slide-content-width: auto;
 
     margin: var(--carousel-content-margin-desktop); /* @boilerplate */
   }
@@ -152,4 +176,8 @@
   .carousel .carousel-slide .carousel-slide-content[data-align='justify'] { /* @boilerplate */
     --slide-content-width: auto; /* @boilerplate */
   }
+}
+
+.carousel {
+  position: relative;
 }

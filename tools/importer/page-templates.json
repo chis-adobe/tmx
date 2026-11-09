@@ -1,0 +1,16 @@
+{
+  "templates": [
+    {
+      "name": "home",
+      "description": "TMX homepage: carousel, brand statement, company teasers, News and Insights, press releases, investor relations",
+      "urls": ["https://www.tmx.com/"],
+      "blocks": []
+    },
+    {
+      "name": "pov",
+      "description": "TMX POV article pages and the POV listing",
+      "urls": ["https://www.tmx.com/en/pov?id=171", "https://www.tmx.com/en/pov"],
+      "blocks": []
+    }
+  ]
+}

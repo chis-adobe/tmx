@@ -1,0 +1,43 @@
+{
+  "definitions": [
+    {
+      "title": "News and Insights",
+      "id": "news-and-insights",
+      "model": "news-and-insights",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"news-and-insights\"><div><div><p><a href=\"/povs/\">Article</a></p></div></div></div>",
+          "fields": [
+            { "name": "articles", "selector": "div:nth-child(1)>div" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "news-and-insights",
+      "fields": [
+        {
+          "component": "select",
+          "name": "classes",
+          "label": "Layout",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            { "name": "Cards", "value": "" },
+            { "name": "Featured", "value": "featured" }
+          ]
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "articles",
+          "label": "Articles",
+          "description": "Links to article pages (e.g. /povs/my-article), one per line. Each card's tag, title, date, author and image come from the linked article."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

@@ -22,6 +22,45 @@
         "name": "robots",
         "label": "Robots",
         "description": "Index control via robots"
+      },
+      {
+        "component": "select",
+        "name": "template",
+        "label": "Template",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "None",
+            "value": ""
+          },
+          {
+            "name": "Home",
+            "value": "home"
+          },
+          {
+            "name": "POV",
+            "value": "pov"
+          }
+        ],
+        "description": "Templates set the shared header and footer fragments"
+      },
+      {
+        "component": "select",
+        "name": "breadcrumbs",
+        "label": "Breadcrumbs",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Off",
+            "value": ""
+          },
+          {
+            "name": "On",
+            "value": "true"
+          }
+        ]
       }
     ]
   },
@@ -52,6 +91,34 @@
           {
             "name": "Highlight",
             "value": "highlight"
+          },
+          {
+            "name": "Light background",
+            "value": "light"
+          },
+          {
+            "name": "Chevron heading",
+            "value": "chevron-heading"
+          },
+          {
+            "name": "Statement",
+            "value": "statement"
+          },
+          {
+            "name": "Split: main column",
+            "value": "split-main"
+          },
+          {
+            "name": "Split: side column",
+            "value": "split-aside"
+          },
+          {
+            "name": "Placeholder",
+            "value": "placeholder"
+          },
+          {
+            "name": "Legal (small print)",
+            "value": "legal"
           }
         ]
       },
@@ -97,6 +164,86 @@
     ]
   },
   {
+    "id": "article",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags",
+        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "date",
+        "label": "Publish date",
+        "description": "Shown as written, e.g. September 22, 2026"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Teaser image",
+        "description": "Used on cards that reference this article",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Teaser image alt text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "summary",
+        "label": "Summary",
+        "description": "One line, used on cards that reference this article"
+      }
+    ]
+  },
+  {
+    "id": "author",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Photo",
+        "description": "Profile photo. The author's name is used as its alt text.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "name",
+        "label": "Name",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkedin",
+        "label": "LinkedIn profile URL",
+        "description": "The photo and the name link here too."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkedinText",
+        "label": "LinkedIn link text",
+        "description": "e.g. Follow Dean on LinkedIn"
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -119,6 +266,28 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "cards",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Teaser",
+            "value": "teaser"
+          }
+        ]
       }
     ]
   },
@@ -168,13 +337,13 @@
       {
         "component": "text",
         "name": "urlText",
-        "label": "Fragment URL",
-        "required": true
+        "label": "Fragment URL Text"
       },
       {
         "component": "text",
         "name": "url",
-        "label": "Fragment URL Text"
+        "label": "Fragment URL",
+        "required": true
       }
     ]
   },
@@ -201,6 +370,35 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "news-and-insights",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Layout",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Cards",
+            "value": ""
+          },
+          {
+            "name": "Featured",
+            "value": "featured"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "articles",
+        "label": "Articles",
+        "description": "Links to article pages (e.g. /povs/my-article), one per line. Each card's tag, title, date, author and image come from the linked article."
       }
     ]
   },

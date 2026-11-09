@@ -23,6 +23,45 @@
           "name": "robots",
           "label": "Robots",
           "description": "Index control via robots"
+        },
+        {
+          "component": "select",
+          "name": "template",
+          "label": "Template",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "None",
+              "value": ""
+            },
+            {
+              "name": "Home",
+              "value": "home"
+            },
+            {
+              "name": "POV",
+              "value": "pov"
+            }
+          ],
+          "description": "Templates set the shared header and footer fragments"
+        },
+        {
+          "component": "select",
+          "name": "breadcrumbs",
+          "label": "Breadcrumbs",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Off",
+              "value": ""
+            },
+            {
+              "name": "On",
+              "value": "true"
+            }
+          ]
         }
       ]
     }

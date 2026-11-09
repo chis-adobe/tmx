@@ -1,0 +1,56 @@
+@import url('./author-tokens.css');
+
+.author {
+  display: grid;
+  grid-template-columns: var(--author-photo-size) 1fr;
+  column-gap: var(--spacing-l);
+  align-items: start;
+  padding: var(--spacing-l) 0;
+  border-block: var(--border-width-s) solid var(--author-border-color);
+}
+
+.author > div {
+  grid-column: 2;
+}
+
+.author > .author-photo {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  line-height: 0;
+}
+
+.author .author-photo img {
+  width: var(--author-photo-size);
+  height: var(--author-photo-size);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author p {
+  margin: 0;
+}
+
+.author .author-name {
+  font-size: var(--body-font-size-l);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.author .author-name a {
+  color: inherit;
+}
+
+.author .author-title {
+  margin-top: var(--spacing-xs);
+  font-size: var(--body-font-size-s);
+}
+
+.author .author-link {
+  margin-top: var(--spacing-s);
+  font-size: var(--body-font-size-s);
+}
+
+.author .author-link a {
+  font-weight: 700;
+  color: var(--link-color);
+}

@@ -1,19 +1,29 @@
-/* header design tokens (layout only; colors/typography use global tokens) */
-:root { /* @boilerplate */
-  --header-nav-max-width: 1248px; /* @boilerplate */
-  --header-nav-max-width-desktop: 1264px; /* @boilerplate */
-  --header-nav-padding: 0 var(--spacing-m); /* @boilerplate */
-  --header-nav-padding-desktop: 0 var(--spacing-l); /* @boilerplate */
-  --header-nav-gap: var(--spacing-m); /* @boilerplate */
-  --header-nav-gap-desktop: var(--spacing-l); /* @boilerplate */
-  --header-brand-width: 128px; /* @boilerplate */
-  --header-dropdown-width: 200px; /* @boilerplate */
-  --header-dropdown-padding: var(--spacing-s); /* @boilerplate */
-  --header-dropdown-left: calc(-1 * var(--spacing-m)); /* @boilerplate */
-  --header-hamburger-size: 22px; /* @boilerplate */
-  --header-hamburger-bar-width: 20px; /* @boilerplate */
-  --header-hamburger-bar-height: 2px; /* @boilerplate */
-  --header-hamburger-bar-radius: 2px; /* @boilerplate */
-  --header-dropdown-arrow-size: 6px; /* @boilerplate */
-  --header-dropdown-arrow-thickness: 2px; /* @boilerplate */
+/* header design tokens */
+:root {
+  --header-nav-max-width: 1248px;
+  --header-nav-max-width-desktop: 1240px;
+  --header-nav-padding: 0 var(--spacing-m);
+  --header-nav-padding-desktop: 0 var(--spacing-l);
+  --header-nav-gap: var(--spacing-m);
+  --header-nav-gap-desktop: 28px;
+  --header-brand-width: 72px;
+  --header-brand-width-desktop: 96px;
+  --header-text-color: #182957;
+  --header-nav-color: #1a1a1a;
+  --header-nav-font-size: 15px;
+  --header-border-color: #e3e8eb;
+  --header-utility-height: 32px;
+  --header-utility-background: var(--brand-primary);
+  --header-utility-color: #fff;
+  --header-utility-font-size: 13px;
+  --header-brand-row-height: 88px;
+  --header-sections-height: 44px;
+  --header-search-width: 300px;
+  --header-search-border-color: #c5ced3;
+  --header-dropdown-arrow-size: 6px;
+  --header-dropdown-arrow-thickness: 2px;
+  --header-hamburger-size: 22px;
+  --header-hamburger-bar-width: 20px;
+  --header-hamburger-bar-height: 2px;
+  --header-hamburger-bar-radius: 2px;
 }

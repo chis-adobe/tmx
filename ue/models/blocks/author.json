@@ -1,0 +1,64 @@
+{
+  "definitions": [
+    {
+      "title": "Author",
+      "id": "author",
+      "model": "author",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"author\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Name</p></div></div><div><div><p>Title</p></div></div><div><div><p><a href=\"https://www.linkedin.com/\">Follow on LinkedIn</a></p></div></div></div>",
+          "fields": [
+            { "name": "image", "selector": "div:nth-child(1)>div>picture>img[src]" },
+            { "name": "name", "selector": "div:nth-child(2)>div" },
+            { "name": "title", "selector": "div:nth-child(3)>div" },
+            { "name": "linkedin", "selector": "div:nth-child(4)>div>p>a[href]" },
+            { "name": "linkedinText", "selector": "div:nth-child(4)>div>p>a" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "author",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Photo",
+          "description": "Profile photo. The author's name is used as its alt text.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "name",
+          "label": "Name",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkedin",
+          "label": "LinkedIn profile URL",
+          "description": "The photo and the name link here too."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkedinText",
+          "label": "LinkedIn link text",
+          "description": "e.g. Follow Dean on LinkedIn"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

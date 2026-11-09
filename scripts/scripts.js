@@ -15,6 +15,7 @@ import {
   toClassName,
   loadScript,
   buildBlock,
+  createOptimizedPicture,
 } from './aem.js';
 import { applySectionBackgroundDecorations, decorateNestedSections } from './feature-flags/sections.js';
 import loadThemeSpreadSheetConfig from './feature-flags/theme-sheet.js';
@@ -119,6 +120,47 @@ export function moveInstrumentation(from, to) {
   );
 }
 
+/** Folder the local dev server mounts content under (aem up --html-folder content). */
+const LOCAL_CONTENT_PREFIX = '/content';
+
+/**
+ * Resolves a site-relative content path (e.g. a fragment or an article reference) for the
+ * environment the page is served from. Local previews serve pages under /content/; on Edge
+ * Delivery the path is returned unchanged.
+ * @param {string} path Site-relative path starting with '/'
+ * @returns {string}
+ */
+export function resolveContentPath(path) {
+  const local = window.location.pathname.startsWith(`${LOCAL_CONTENT_PREFIX}/`);
+  if (local && path.startsWith('/') && !path.startsWith(`${LOCAL_CONTENT_PREFIX}/`)) {
+    return `${LOCAL_CONTENT_PREFIX}${path === '/' ? '/index' : path}`;
+  }
+  return path;
+}
+
+/**
+ * Builds a <picture> for an image URL. Same-origin images (the media bus) get optimized
+ * renditions; any other URL is used as-is, because optimization only works on this origin.
+ * @param {string} src Image URL (absolute or relative to the current page)
+ * @param {string} alt Alt text
+ * @param {boolean} [eager] Load eagerly
+ * @param {Array} [breakpoints] Breakpoints for createOptimizedPicture
+ * @returns {HTMLPictureElement}
+ */
+export function createPicture(src, alt = '', eager = false, breakpoints = [{ width: '750' }]) {
+  const url = new URL(src, window.location.href);
+  if (url.origin === window.location.origin) {
+    return createOptimizedPicture(url.href, alt, eager, breakpoints);
+  }
+  const picture = document.createElement('picture');
+  const img = document.createElement('img');
+  img.src = url.href;
+  img.alt = alt;
+  img.loading = eager ? 'eager' : 'lazy';
+  picture.append(img);
+  return picture;
+}
+
 /* add a block id_number to a block instance (when any decorate(block) defines it)
   to be used for martech tracking, aria-controls, aria-labelledby, etc.
 */
@@ -208,8 +250,10 @@ function buildAutoBlocks(main) {
 
     // auto-embed bare YouTube/Vimeo links, wherever they appear
     if (FEATURES.videoLinks) {
+      // icon links (":youtube:" notation or an icon span) are social links, not videos
+      const isIconLink = (a) => a.querySelector('.icon') || /^:[a-z0-9-]+:$/.test(a.textContent.trim());
       const videoLinks = [...main.querySelectorAll('a[href]')]
-        .filter((a) => !a.closest('.embed, .video') && isVideoLink(a.href));
+        .filter((a) => !a.closest('.embed, .video') && !isIconLink(a) && isVideoLink(a.href));
       videoLinks.forEach((a) => {
         const { parentElement } = a;
         const embedBlock = buildBlock('embed', { elems: [a] });
@@ -422,6 +466,53 @@ export function decorateMain(main) {
   if (FEATURES.spanTags) decorateSpanTags(main);
 }
 
+/* === TEMPLATES === */
+
+/**
+ * Templates that have code under /templates/{name}/. Only these names are loaded, so page
+ * metadata can never point the loader at an arbitrary path.
+ */
+const TEMPLATES = ['home', 'pov'];
+
+/**
+ * Adds a <meta> to the head unless the page already defines it, so page metadata always
+ * wins over template defaults.
+ * @param {string} name Metadata name (e.g. 'nav')
+ * @param {string} content Default value
+ */
+export function setDefaultMetadata(name, content) {
+  if (!name || !content || getMetadata(name)) return;
+  const meta = document.createElement('meta');
+  meta.setAttribute(name.includes(':') ? 'property' : 'name', name);
+  meta.content = content;
+  document.head.append(meta);
+}
+
+/**
+ * Loads the page template's CSS and JS (templates/{name}/{name}.css|js). A template module
+ * may export `metadata` (defaults such as nav/footer fragment paths applied to every page on
+ * the template) and a default `decorate(main)` function.
+ * @param {Element} main The main element
+ */
+async function loadTemplate(main) {
+  const template = toClassName(getMetadata('template').split(',')[0] || '');
+  if (!TEMPLATES.includes(template)) return;
+  const base = `${window.hlx.codeBasePath}/templates/${template}/${template}`;
+  try {
+    const [mod] = await Promise.all([
+      import(`${base}.js`),
+      loadCSS(`${base}.css`),
+    ]);
+    Object.entries(mod.metadata || {}).forEach(([name, value]) => setDefaultMetadata(name, value));
+    if (typeof mod.default === 'function') await mod.default(main);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Failed to load template ${template}`, error);
+  }
+}
+
+/* === END TEMPLATES === */
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -429,6 +520,7 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  await loadTemplate(doc.querySelector('main'));
   if (FEATURES.themeSheet) loadThemeSpreadSheetConfig();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;

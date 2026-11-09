@@ -1,4 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { resolveContentPath } from '../../scripts/scripts.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -121,25 +122,56 @@ function getDirectTextContent(menuItem) {
 
 const MAX_BREADCRUMB_DEPTH = 20;
 
+/**
+ * Finds the nav link for a URL. When the page itself is not in the nav (e.g. an article),
+ * falls back to the closest parent folder that is (e.g. /povs/ for /povs/my-article).
+ * @returns {{ link: HTMLAnchorElement|null, isParent: boolean }}
+ */
+function findNavLink(nav, currentUrl) {
+  const url = new URL(currentUrl);
+  // nav links are site-relative; compare them in the form this environment serves pages at
+  const links = Array.from(nav.querySelectorAll('a[href]')).map((a) => {
+    const target = new URL(a.href);
+    const path = target.origin === url.origin ? resolveContentPath(target.pathname) : null;
+    return { a, path };
+  });
+  const exact = links.find(({ a, path }) => a.href === currentUrl || path === url.pathname);
+  if (exact) return { link: exact.a, isParent: false };
+  const segments = url.pathname.split('/').filter(Boolean);
+  for (let i = segments.length - 1; i > 0; i -= 1) {
+    const parent = `/${segments.slice(0, i).join('/')}/`;
+    const match = links.find(({ path }) => path === parent || path === parent.slice(0, -1));
+    if (match) return { link: match.a, isParent: true };
+  }
+  return { link: null, isParent: false };
+}
+
 async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   const crumbs = [];
 
-  const homeUrl = document.querySelector('.nav-brand a[href]').href;
+  const homeLink = document.querySelector('.nav-brand a[href]');
+  const homeUrl = homeLink.href;
+  // label for the home crumb comes from the nav's own link to the homepage (authored text)
+  const homeNavLink = Array.from(nav.querySelectorAll('a[href]')).find((a) => a.href === homeUrl);
+  const homeTitle = homeNavLink?.textContent.trim() || homeLink.textContent.trim() || homeLink.querySelector('img')?.alt || '';
 
-  let menuItem = Array.from(nav.querySelectorAll('a')).find((a) => a.href === currentUrl);
-  if (menuItem) {
+  const { link, isParent } = findNavLink(nav, currentUrl);
+  let menuItem = link ? link.closest('li') : null;
+  if (menuItem && menuItem.querySelector(':scope > a')?.href !== homeUrl) {
     let depth = 0;
     do {
-      const link = menuItem.querySelector(':scope > a');
-      crumbs.unshift({ title: getDirectTextContent(menuItem), url: link ? link.href : null });
+      const itemLink = menuItem.querySelector(':scope > a');
+      crumbs.unshift({ title: getDirectTextContent(menuItem), url: itemLink ? itemLink.href : null });
       menuItem = menuItem.closest('ul')?.closest('li');
       depth += 1;
     } while (menuItem && depth < MAX_BREADCRUMB_DEPTH);
-  } else if (currentUrl !== homeUrl) {
-    crumbs.unshift({ title: getMetadata('og:title'), url: currentUrl });
+  }
+  const pageTitle = getMetadata('og:title');
+  if ((!link || isParent) && currentUrl !== homeUrl && crumbs.at(-1)?.title !== pageTitle) {
+    crumbs.push({ title: pageTitle, url: currentUrl });
   }
 
-  crumbs.unshift({ title: 'Home', url: homeUrl });
+  crumbs.unshift({ title: homeTitle, url: homeUrl });
 
   // last link is current page and should not be linked
   if (crumbs.length > 1) {
@@ -186,22 +218,21 @@ export default async function decorate(block) {
 
   // decorate nav DOM
   block.textContent = '';
+  if (!fragment) return;
   const nav = document.createElement('nav');
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
+  const classes = ['brand', 'sections', 'tools', 'search'];
   classes.forEach((c, i) => {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
   });
 
   const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
-  }
+  // header links are never buttons: undo decorateButtons() inside the nav
+  nav.querySelectorAll('.button-wrapper').forEach((wrapper) => wrapper.classList.remove('button-wrapper'));
+  nav.querySelectorAll('a.button').forEach((a) => { a.className = ''; });
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
@@ -214,10 +245,6 @@ export default async function decorate(block) {
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
         }
       });
-    });
-    navSections.querySelectorAll('.button-container').forEach((buttonContainer) => {
-      buttonContainer.classList.remove('button-container');
-      buttonContainer.querySelector('.button').classList.remove('button');
     });
   }
 
@@ -247,7 +274,7 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
-  if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
+  if (getMetadata('breadcrumbs').toLowerCase() === 'true' && navSections && navBrand?.querySelector('a[href]')) {
     navWrapper.append(await buildBreadcrumbs());
   }
 }

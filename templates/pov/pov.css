@@ -1,0 +1,32 @@
+/* POV template (articles and the article listing) */
+body.pov main > .section > div {
+  max-width: var(--pov-content-width, 1000px);
+}
+
+body.pov main h1 {
+  margin-top: var(--spacing-s);
+  font-size: var(--heading-font-size-xl);
+}
+
+body.pov main h3 {
+  font-size: var(--heading-font-size-s);
+}
+
+body.pov main sup {
+  line-height: 0;
+}
+
+/* listing cards (default cards block) */
+body.pov main .cards .cards-card-body p:first-child {
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+body.pov main .cards .cards-card-body p {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--body-font-size-xs);
+}
+
+body.pov main .cards .cards-card-body a {
+  color: inherit;
+}

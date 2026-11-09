@@ -24,6 +24,34 @@
             {
               "name": "Highlight",
               "value": "highlight"
+            },
+            {
+              "name": "Light background",
+              "value": "light"
+            },
+            {
+              "name": "Chevron heading",
+              "value": "chevron-heading"
+            },
+            {
+              "name": "Statement",
+              "value": "statement"
+            },
+            {
+              "name": "Split: main column",
+              "value": "split-main"
+            },
+            {
+              "name": "Split: side column",
+              "value": "split-aside"
+            },
+            {
+              "name": "Placeholder",
+              "value": "placeholder"
+            },
+            {
+              "name": "Legal (small print)",
+              "value": "legal"
             }
           ]
         },
@@ -51,19 +79,22 @@
       "id": "section",
       "components": [
         "accordion",
+        "article",
+        "author",
         "cards",
         "carousel",
         "columns",
         "embed",
-        "fragment",
         "form",
+        "fragment",
         "hero",
         "image",
+        "news-and-insights",
         "quote",
         "search",
         "section-title",
-        "tabs",
         "table",
+        "tabs",
         "text",
         "video"
       ]

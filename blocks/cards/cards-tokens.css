@@ -8,4 +8,10 @@
   --cards-card-body-margin: var(--spacing-s); /* @boilerplate */
   --cards-image-aspect-ratio: 4 / 3; /* @boilerplate */
   --cards-image-object-fit: cover; /* @boilerplate */
+  --cards-teaser-gap: 64px;
+  --cards-teaser-frame-offset: 18px;
+  --cards-teaser-frame-color: var(--brand-secondary);
+  --cards-teaser-link-background: var(--brand-primary);
+  --cards-teaser-link-color: #fff;
+  --cards-teaser-link-hover-background: #1b4a6b;
 }

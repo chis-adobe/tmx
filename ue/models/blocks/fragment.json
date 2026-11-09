@@ -8,8 +8,14 @@
         "da": {
           "unsafeHTML": "<div class=\"fragment\"><div><div><p><a href=\"\">Fragment URL</a></p></div></div></div>",
           "fields": [
-            { "name": "url", "selector": "div>div>p>a[href]"},
-            { "name": "urlText", "selector": "div>div>p>a"}
+            {
+              "name": "url",
+              "selector": "div>div>p>a[href]"
+            },
+            {
+              "name": "urlText",
+              "selector": "div>div>p>a"
+            }
           ]
         }
       }
@@ -22,13 +28,13 @@
         {
           "component": "text",
           "name": "urlText",
-          "label": "Fragment URL",
-          "required": true
+          "label": "Fragment URL Text"
         },
         {
           "component": "text",
           "name": "url",
-          "label": "Fragment URL Text"
+          "label": "Fragment URL",
+          "required": true
         }
       ]
     }
