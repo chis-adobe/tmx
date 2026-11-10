@@ -58,15 +58,29 @@ body.home main .columns ul {
   list-style: none;
 }
 
-body.home main .columns li a {
+/* tile = the list item; it may hold one link (icon + label) or an icon link and a label link */
+body.home main .columns li {
   display: flex;
   align-items: center;
   gap: var(--spacing-s);
-  height: 100%;
-  box-sizing: border-box;
   padding: var(--spacing-s) var(--spacing-m);
   background-color: var(--background-color);
   box-shadow: 0 1px 4px rgb(0 0 0 / 12%);
+}
+
+body.home main .columns li p {
+  margin: 0;
+  line-height: 0;
+}
+
+body.home main .columns li p:last-child {
+  line-height: 1.3;
+}
+
+body.home main .columns li a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-s);
   color: var(--heading-color);
   font-weight: 700;
 }
