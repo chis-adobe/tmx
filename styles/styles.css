@@ -163,6 +163,12 @@ header { /* @boilerplate */
   height: var(--header-height); /* @boilerplate */
 }
 
+/* block & template library docs (/docs/library/...) preview without the site chrome */
+body.library-doc > header,
+body.library-doc > footer {
+  display: none;
+}
+
 header .header,
 footer .footer { /* @boilerplate */
   visibility: hidden; /* @boilerplate */

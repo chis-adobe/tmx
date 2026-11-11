@@ -466,6 +466,32 @@ export function decorateMain(main) {
   if (FEATURES.spanTags) decorateSpanTags(main);
 }
 
+/* === LIBRARY DOCS === */
+
+/** Path segment of the DA block & template library docs (blocks/ and templates/ examples). */
+const LIBRARY_PATH = '/docs/library/';
+
+/**
+ * Library docs are previewed on their own: no site header/footer, so the preview shows only
+ * the block or template. Works for any doc under /docs/library/ — authors need no metadata.
+ * @returns {boolean}
+ */
+export function isLibraryDoc() {
+  return window.location.pathname.includes(LIBRARY_PATH);
+}
+
+/**
+ * Removes the DA library helper tables — `library-metadata` (variant description/search tags)
+ * and `library-container-start`/`-end` (group markers) — so they never render as content.
+ * @param {Element} main The main element
+ */
+function removeLibraryMetadata(main) {
+  main.querySelectorAll('div.library-metadata, div.library-container-start, div.library-container-end')
+    .forEach((el) => el.remove());
+}
+
+/* === END LIBRARY DOCS === */
+
 /* === TEMPLATES === */
 
 /**
@@ -519,6 +545,7 @@ async function loadTemplate(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  if (isLibraryDoc()) document.body.classList.add('library-doc');
   decorateTemplateAndTheme();
   await loadTemplate(doc.querySelector('main'));
   if (FEATURES.themeSheet) loadThemeSpreadSheetConfig();
@@ -527,6 +554,7 @@ async function loadEager(doc) {
   }
   const main = doc.querySelector('main');
   if (main) {
+    removeLibraryMetadata(main);
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
@@ -574,8 +602,10 @@ async function loadLazy(doc) {
     if (hasQE) import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
   })();
 
-  loadHeader(doc.querySelector('body > header'));
-  loadFooter(doc.querySelector('body > footer'));
+  if (!isLibraryDoc()) {
+    loadHeader(doc.querySelector('body > header'));
+    loadFooter(doc.querySelector('body > footer'));
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
