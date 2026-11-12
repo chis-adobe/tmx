@@ -1,35 +1,76 @@
 import { toClassName } from '../../scripts/aem.js';
 
 /**
- * Article block — the article's teaser data, authored once on the article page and read by
- * listing blocks (e.g. news-and-insights) wherever the article is referenced.
+ * Article details block — the key/value table at the top of an article (POV or press release).
  *
- * Key/value rows: Tags | Date | Image | Summary. On the article page itself only the date and
- * tags are shown (as the byline); image and summary are teaser-only fields.
- * @param {Element} block The block element
+ * Rows (key in the first cell, value in the second; empty rows are ignored):
+ *   Title, Description, Date, City, Tags, Image, Summary, Author, Contact, Related Document
+ *
+ * The block renders the article header: title (the page's h1), date and tags, and the
+ * description. Image and Summary feed article cards (News and Insights). City, Author, Contact
+ * and Related Document are placed around the article text by the page template
+ * (scripts/article-layout.js).
+ */
+
+/** Rows shown in the header, in display order. */
+const HEADER_KEYS = ['title', 'date', 'tags', 'description'];
+const KEY_ALIASES = { 'related-doc': 'related-document' };
+
+function tagList(value) {
+  const tags = value.textContent.split(/[,\s]+/).map((t) => t.trim()).filter(Boolean);
+  if (!tags.length) return null;
+  const list = document.createElement('ul');
+  list.className = 'article-tag-list';
+  tags.forEach((tag) => {
+    const li = document.createElement('li');
+    li.textContent = tag;
+    list.append(li);
+  });
+  return list;
+}
+
+function titleHeading(value) {
+  const h1 = document.createElement('h1');
+  const source = value.querySelector('h1, h2, h3, h4, h5, h6, p');
+  h1.append(...(source || value).childNodes);
+  if (source?.id) h1.id = source.id;
+  return h1;
+}
+
+/**
+ * @param {Element} block The article block
  */
 export default function decorate(block) {
+  const rows = new Map();
   [...block.children].forEach((row) => {
     const [label, value] = row.children;
-    const key = toClassName(label?.textContent || '');
-    if (!key || !value) return;
-    row.classList.add(`article-${key}`);
+    let key = toClassName(label?.textContent || '');
+    key = KEY_ALIASES[key] || key;
+    const empty = !value || (!value.textContent.trim() && !value.querySelector('img'));
+    row.classList.add('article-row');
+    if (key) row.classList.add(`article-${key}`);
+    if (empty || !HEADER_KEYS.includes(key)) {
+      row.hidden = true;
+      return;
+    }
     label.classList.add('article-label');
     value.classList.add('article-value');
-
-    if (key === 'tags') {
-      const tags = value.textContent.split(/[,\s]+/).map((t) => t.trim()).filter(Boolean);
-      const list = document.createElement('ul');
-      list.className = 'article-tag-list';
-      tags.forEach((tag) => {
-        const li = document.createElement('li');
-        li.textContent = tag;
-        list.append(li);
-      });
-      if (tags.length) {
-        value.textContent = '';
-        value.append(list);
-      }
-    }
+    rows.set(key, { row, value });
   });
+
+  const title = rows.get('title');
+  if (title) title.value.replaceChildren(titleHeading(title.value));
+
+  const tags = rows.get('tags');
+  const list = tags && tagList(tags.value);
+  if (list) tags.value.replaceChildren(list);
+
+  // header line: date | tags
+  const meta = document.createElement('div');
+  meta.className = 'article-meta';
+  ['date', 'tags'].forEach((key) => { if (rows.has(key)) meta.append(rows.get(key).row); });
+
+  const header = [rows.get('title')?.row, meta.children.length ? meta : null, rows.get('description')?.row]
+    .filter(Boolean);
+  block.prepend(...header);
 }

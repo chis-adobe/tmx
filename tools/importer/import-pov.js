@@ -3,12 +3,13 @@
  *
  * Sources and outputs:
  *   https://www.tmx.com/en/pov?id=171 -> /povs/2026-tsx30-mining-sector (article)
- *                                       + /authors/dean-mcpherson (author fragment)
+ *                                       + /authors/dean-mcpherson (author page)
+ *                                       + /disclaimers/pov (shared POV disclaimer fragment)
  *   https://www.tmx.com/en/pov        -> /povs/ (article listing)
  */
 import {
-  ARTICLE_TEASERS, AUTHORS, SITE, block, buildMain, cloneContent, el, image, link,
-  metadata, sectionMetadata, text, wrap,
+  ARTICLE_TEASERS, AUTHORS, DISCLAIMERS, SITE, articleBlock, authorBlock, block, buildMain,
+  cloneContent, el, image, link, metadata, sectionMetadata, siteLink, text, wrap,
 } from './tmx-helpers.js';
 
 const ARTICLE_PATHS = { 171: '/povs/2026-tsx30-mining-sector' };
@@ -44,12 +45,12 @@ function authorFragment(document, authorBox) {
   return {
     name,
     main: buildMain(document, [[
-      block(document, 'Author', [
-        [image(document, img.getAttribute('src'), name)],
-        [name],
-        [title],
-        [wrap(document, 'p', followLink)],
-      ]),
+      authorBlock(document, {
+        Photo: image(document, img.getAttribute('src'), name),
+        Name: name,
+        Role: title,
+        Link: wrap(document, 'p', followLink),
+      }),
       metadata(document, { Title: name, Robots: 'noindex', Template: 'pov' }),
     ]]),
   };
@@ -77,21 +78,30 @@ function article(document, id, url) {
   const author = authorFragment(document, authorBox);
   const authorPath = AUTHORS[author.name];
 
+  // the closing copyright/disclaimer is shared by every POV: it lives in /disclaimers/pov;
+  // footnotes stay with the article
+  const isDisclaimer = (n) => text(n).startsWith('Copyright');
+  const footnotes = notes.filter((n) => !isDisclaimer(n));
+  const disclaimer = notes.filter(isDisclaimer);
+
   const main = buildMain(document, [
     [
-      el(document, 'h1', title),
-      block(document, 'Article', [
-        ['Tags', teaser.tags || ''],
-        ['Date', date],
-        ['Image', teaser.image ? image(document, teaser.image, title) : ''],
-        ['Summary', summary],
-      ]),
+      articleBlock(document, {
+        Title: title,
+        Date: date,
+        Tags: teaser.tags,
+        Image: teaser.image ? image(document, teaser.image, title) : '',
+        Summary: summary,
+        Author: siteLink(document, authorPath),
+      }),
       ...intro.map((n) => cloneContent(document, n)),
     ],
-    [block(document, 'Fragment', [[link(document, `${SITE}${authorPath}`, `${SITE}${authorPath}`)]])],
-    [
-      ...notes.map((n) => cloneContent(document, n)),
+    footnotes.length ? [
+      ...footnotes.map((n) => cloneContent(document, n)),
       sectionMetadata(document, 'legal'),
+    ] : null,
+    [
+      block(document, 'Fragment', [[siteLink(document, DISCLAIMERS.pov)]]),
       metadata(document, {
         Title: title,
         Description: summary,
@@ -99,11 +109,18 @@ function article(document, id, url) {
         Breadcrumbs: 'true',
       }),
     ],
-  ]);
+  ].filter(Boolean));
+
+  const disclaimerMain = buildMain(document, [[
+    ...disclaimer.map((n) => cloneContent(document, n)),
+    sectionMetadata(document, 'legal'),
+    metadata(document, { Title: 'POV disclaimer', Robots: 'noindex' }),
+  ]]);
 
   return [
     { element: main, path: ARTICLE_PATHS[id] || new URL(url).pathname },
     { element: author.main, path: authorPath },
+    { element: disclaimerMain, path: DISCLAIMERS.pov },
   ];
 }
 

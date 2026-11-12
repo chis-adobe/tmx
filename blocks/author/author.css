@@ -15,8 +15,26 @@
 
 .author > .author-photo {
   grid-column: 1;
-  grid-row: 1 / span 4;
+  grid-row: 1 / span 6;
   line-height: 0;
+}
+
+/* no photo (e.g. a press contact): single column */
+.author.author-no-photo {
+  grid-template-columns: 1fr;
+}
+
+.author.author-no-photo > div {
+  grid-column: 1;
+}
+
+.author .author-phone,
+.author .author-email {
+  font-size: var(--body-font-size-s);
+}
+
+.author .author-email a {
+  color: var(--link-color);
 }
 
 .author .author-photo img {

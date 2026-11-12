@@ -8,7 +8,7 @@
       "previewSite": "ise-boilerplate"
     },
     "tmx": {
-      "libraryUrl": "https://main--ise-boilerplate--aemdemos.aem.page/docs/library/blocks.json",
+      "libraryUrl": "https://main--tmx--chis-adobe.aem.page/docs/library/blocks.json",
       "previewOrg": "chis-adobe",
       "previewSite": "tmx",
       "contentHostUrl": "https://content.da.live/chis-adobe/tmx/"

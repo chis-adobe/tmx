@@ -3,13 +3,28 @@
     {
       "name": "home",
       "description": "TMX homepage: carousel, brand statement, company teasers, News and Insights, press releases, investor relations",
-      "urls": ["https://www.tmx.com/"],
+      "urls": [
+        "https://www.tmx.com/"
+      ],
       "blocks": []
     },
     {
       "name": "pov",
       "description": "TMX POV article pages and the POV listing",
-      "urls": ["https://www.tmx.com/en/pov?id=171", "https://www.tmx.com/en/pov"],
+      "urls": [
+        "https://www.tmx.com/en/pov?id=171",
+        "https://www.tmx.com/en/pov"
+      ],
+      "blocks": []
+    },
+    {
+      "name": "press-release",
+      "description": "TMX newsroom press releases: Article block (title, description, date, city, contact, related document), release text, About TMX Group disclaimer fragment",
+      "urls": [
+        "https://www.tmx.com/en/newsroom/press-releases?id=1390",
+        "https://www.tmx.com/en/newsroom/press-releases?id=1389",
+        "https://www.tmx.com/en/newsroom/press-releases?id=1388"
+      ],
       "blocks": []
     }
   ]

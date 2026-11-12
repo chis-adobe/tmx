@@ -1,6 +1,6 @@
 /* global WebImporter */
 /**
- * Shared helpers for the TMX import scripts (import-home.js, import-pov.js).
+ * Shared helpers for the TMX import scripts (import-home.js, import-pov.js, import-press-release.js).
  *
  * The importer turns relative links and image paths into absolute source-site URLs. Links to
  * migrated pages and to locally hosted media are therefore emitted on SITE (this project's
@@ -9,7 +9,7 @@
 
 export const SITE = 'https://main--tmx--chis-adobe.aem.page';
 export const SOURCE = 'https://www.tmx.com';
-const MEDIA = `${SITE}/media-da`;
+const MEDIA = `${SITE}/media-da/media`;
 
 /** Source pages that have been migrated, mapped to their new paths. */
 const MIGRATED = {
@@ -18,11 +18,24 @@ const MIGRATED = {
   '/en/pov': '/povs/',
   '/pov': '/povs/',
   '/en/pov?id=171': '/povs/2026-tsx30-mining-sector',
+  '/en/newsroom/press-releases?id=1390': '/newsroom/press-releases/tmx-group-equity-financing-statistics-october-2026',
+  '/en/newsroom/press-releases?id=1389': '/newsroom/press-releases/tmx-group-consolidated-trading-statistics-october-2026',
+  '/en/newsroom/press-releases?id=1388': '/newsroom/press-releases/tmx-group-limited-declares-dividend-of-0-26-per-common-share',
 };
+
+/** New path of a migrated source page (path + query, e.g. '/en/pov?id=171'), if any. */
+export const migratedPath = (key) => MIGRATED[key];
 
 /** Path of the shared author fragment, keyed by the author's name as shown on tmx.com. */
 export const AUTHORS = {
   'Dean McPherson': '/authors/dean-mcpherson',
+  'Catherine Kee': '/authors/catherine-kee',
+};
+
+/** Shared fragments referenced by article pages (boilerplate kept in one place). */
+export const DISCLAIMERS = {
+  pov: '/disclaimers/pov',
+  pressRelease: '/disclaimers/press-release',
 };
 
 /**
@@ -99,6 +112,29 @@ export function cloneContent(document, node) {
 
 export function block(document, name, cells) {
   return WebImporter.Blocks.createBlock(document, { name, cells });
+}
+
+/**
+ * Article details block (template pov / press-release). Always emits every row, in this order,
+ * so the table has the same shape on every article (empty rows are ignored when rendered).
+ */
+export const ARTICLE_KEYS = ['Title', 'Description', 'Date', 'City', 'Tags', 'Image', 'Summary',
+  'Author', 'Contact', 'Related Document'];
+
+export function articleBlock(document, values) {
+  return block(document, 'Article', ARTICLE_KEYS.map((key) => [key, values[key] || '']));
+}
+
+/** Author / contact person block: keyed rows, same order on every author page. */
+export const AUTHOR_KEYS = ['Photo', 'Name', 'Role', 'Phone', 'Email', 'Link'];
+
+export function authorBlock(document, values) {
+  return block(document, 'Author', AUTHOR_KEYS.map((key) => [key, values[key] || '']));
+}
+
+/** A link to a page on this site (emitted on SITE, relativized after import). */
+export function siteLink(document, path, label = `${SITE}${path}`) {
+  return el(document, 'a', label, { href: `${SITE}${path}` });
 }
 
 export function sectionMetadata(document, style) {

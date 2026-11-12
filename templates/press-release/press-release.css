@@ -1,0 +1,42 @@
+/* Press release template */
+body.press-release main > .section > div {
+  max-width: var(--pov-content-width, 1000px);
+}
+
+body.press-release main h1 {
+  font-size: var(--heading-font-size-xl);
+}
+
+body.press-release main h2 {
+  font-size: var(--heading-font-size-s);
+}
+
+/* dateline: "November 10, 2026 (TORONTO) – " at the start of the text */
+body.press-release main .article-city {
+  text-transform: uppercase;
+}
+
+/* related document, right after the text */
+body.press-release main .article-related-document a {
+  font-weight: 700;
+}
+
+/* media contact, bottom of the page */
+body.press-release main .article-contact .article-contact-label {
+  margin-bottom: var(--spacing-s);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+body.press-release main .article-contact .author {
+  padding: 0;
+  border: 0;
+}
+
+body.press-release main .article-contact .author .author-name {
+  font-size: var(--body-font-size-m);
+}
+
+body.press-release main .article-contact .author .author-title {
+  margin-top: 0;
+}

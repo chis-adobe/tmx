@@ -13,6 +13,7 @@ import {
   loadCSS,
   readBlockConfig,
   toClassName,
+  toCamelCase,
   loadScript,
   buildBlock,
   createOptimizedPicture,
@@ -136,6 +137,27 @@ export function resolveContentPath(path) {
     return `${LOCAL_CONTENT_PREFIX}${path === '/' ? '/index' : path}`;
   }
   return path;
+}
+
+let placeholdersPromise = null;
+
+/**
+ * Fetches the site's placeholders sheet (/placeholders.json, columns Key and Text) once and
+ * returns it as an object keyed by camelCased Key, e.g. { relatedDocument: 'Related Document:' }.
+ * Used for user-facing labels so no copy is hard-coded. Resolves to {} if the sheet is missing.
+ * @returns {Promise<Object<string, string>>}
+ */
+export function fetchPlaceholders() {
+  if (!placeholdersPromise) {
+    placeholdersPromise = fetch(`${resolveContentPath('/placeholders')}.json`)
+      .then((resp) => (resp.ok ? resp.json() : { data: [] }))
+      .then((json) => Object.fromEntries((json.data || [])
+        .filter((row) => row.Key && typeof row.Text === 'string')
+        .map((row) => [toCamelCase(row.Key), row.Text])
+        .filter(([key]) => isSafeObjectKey(key))))
+      .catch(() => ({}));
+  }
+  return placeholdersPromise;
 }
 
 /**
@@ -498,7 +520,7 @@ function removeLibraryMetadata(main) {
  * Templates that have code under /templates/{name}/. Only these names are loaded, so page
  * metadata can never point the loader at an arbitrary path.
  */
-const TEMPLATES = ['home', 'pov'];
+const TEMPLATES = ['home', 'pov', 'press-release'];
 
 /**
  * Adds a <meta> to the head unless the page already defines it, so page metadata always

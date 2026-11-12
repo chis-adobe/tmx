@@ -56,12 +56,18 @@ function fetchDocument(path) {
  */
 async function readAuthorName(doc, articlePath) {
   const base = new URL(articlePath, window.location.href);
-  const link = [...doc.querySelectorAll('.fragment a[href], a[href*="/authors/"]')]
+  // the Author row of the article block (or a legacy author fragment); never e.g. a disclaimer
+  const link = [...doc.querySelectorAll('a[href*="/authors/"]')]
     .map((a) => toLocalPath(new URL(a.getAttribute('href'), base).href))
     .find(Boolean);
   if (!link) return '';
   const authorDoc = await fetchDocument(link);
-  const nameRow = authorDoc?.querySelector('.author > div:nth-child(2)');
+  const author = authorDoc?.querySelector('.author');
+  if (!author) return '';
+  // keyed author table (Name row), or the legacy ordered one (name in the 2nd row)
+  const config = readBlockConfig(author);
+  if (typeof config.name === 'string') return config.name.trim();
+  const nameRow = author.querySelector(':scope > div:nth-child(2)');
   return nameRow ? nameRow.textContent.trim() : '';
 }
 
@@ -75,7 +81,9 @@ async function loadArticle(path) {
   if (!doc) return null;
   const articleBlock = doc.querySelector('.article');
   const config = articleBlock ? readBlockConfig(articleBlock) : {};
-  const title = doc.querySelector('h1')?.textContent.trim() || '';
+  const configTitle = articleBlock ? readBlockConfig(articleBlock).title : '';
+  const title = (typeof configTitle === 'string' && configTitle.trim())
+    || doc.querySelector('h1')?.textContent.trim() || '';
   if (!title && !articleBlock) return null;
 
   const base = new URL(path, window.location.href);

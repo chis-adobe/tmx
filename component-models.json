@@ -169,9 +169,17 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "tags",
-        "label": "Tags",
-        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+        "name": "title",
+        "label": "Title",
+        "description": "The article headline, shown at the top of the page",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "description": "Optional bold line under the title, e.g. the marketplaces a press release covers"
       },
       {
         "component": "text",
@@ -179,6 +187,20 @@
         "name": "date",
         "label": "Publish date",
         "description": "Shown as written, e.g. September 22, 2026"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "city",
+        "label": "City",
+        "description": "Press releases: dateline city, e.g. Toronto. Shown as \"Date (CITY) –\" at the start of the text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags",
+        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
       },
       {
         "component": "reference",
@@ -200,6 +222,33 @@
         "name": "summary",
         "label": "Summary",
         "description": "One line, used on cards that reference this article"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "author",
+        "label": "Author page",
+        "description": "Link to the author page, e.g. /authors/dean-mcpherson. Shown after the article text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "contact",
+        "label": "Contact page",
+        "description": "Link to the media contact's author page, e.g. /authors/catherine-kee. Shown at the bottom"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "relatedDocument",
+        "label": "Related document URL",
+        "description": "Link to the PDF, shown right after the article text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "relatedDocumentText",
+        "label": "Related document link text"
       }
     ]
   },
@@ -225,7 +274,21 @@
         "component": "richtext",
         "valueType": "string",
         "name": "title",
-        "label": "Title"
+        "label": "Role"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "phone",
+        "label": "Phone",
+        "description": "Optional, e.g. 416-671-1704"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "email",
+        "label": "Email",
+        "description": "Optional, e.g. name@tmx.com"
       },
       {
         "component": "text",

@@ -1,18 +1,17 @@
+import { toClassName } from '../../scripts/aem.js';
 import { createPicture, moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
- * Author block — one author profile, authored once (e.g. in /authors/{name}) and
- * included on articles through a fragment.
+ * Author block — a person card used for article authors and press-release contacts.
  *
- * Rows (one cell each): picture | name | title | LinkedIn link.
- * The photo and the name link to the profile URL; the image alt text is the author's name.
+ * Rows (key in the first cell, value in the second; empty rows are ignored):
+ *   Photo, Name, Role, Phone, Email, Link
+ * Older one-column author tables (photo, name, role, link — by position) still work.
  */
 
-/**
- * Wraps an element in a link to the profile, in place.
- * @param {Element} el
- * @param {string} href
- */
+const ORDERED_KEYS = ['photo', 'name', 'role', 'link'];
+const KEY_ALIASES = { image: 'photo', picture: 'photo', title: 'role' };
+
 function wrapInLink(el, href) {
   const a = document.createElement('a');
   a.href = href;
@@ -20,42 +19,83 @@ function wrapInLink(el, href) {
   a.append(el);
 }
 
-function decoratePhoto(row, name, profileUrl) {
+/** Reads rows into key -> { row, cell }, for keyed (2-column) or legacy ordered tables. */
+function readRows(block) {
+  const rows = [...block.children];
+  const keyed = rows.some((row) => row.children.length >= 2);
+  const map = new Map();
+  rows.forEach((row, i) => {
+    let key;
+    let cell;
+    if (keyed) {
+      const [label, value] = row.children;
+      key = toClassName(label?.textContent || '');
+      key = KEY_ALIASES[key] || key;
+      cell = value;
+      label?.remove();
+    } else {
+      key = ORDERED_KEYS[i];
+      [cell] = row.children;
+    }
+    const empty = !cell || (!cell.textContent.trim() && !cell.querySelector('img'));
+    if (!key || empty) {
+      row.remove();
+      return;
+    }
+    map.set(key, { row, cell });
+  });
+  return map;
+}
+
+function decoratePhoto({ row }, name, profileUrl) {
   row.className = 'author-photo';
   const img = row.querySelector('img');
-  if (!img) {
-    row.classList.add('author-photo-empty');
-    return;
-  }
+  if (!img) return;
   const picture = createPicture(img.src, name, false, [{ width: '240' }]);
   moveInstrumentation(img, picture.querySelector('img'));
-  img.closest('picture').replaceWith(picture);
+  (img.closest('picture') || img).replaceWith(picture);
   if (profileUrl) wrapInLink(picture, profileUrl);
 }
 
-function decorateName(row, profileUrl) {
+function decorateName({ row, cell }, profileUrl) {
   row.className = 'author-name';
   if (!profileUrl || row.querySelector('a')) return;
-  const cell = row.firstElementChild;
-  // name text may arrive bare in the cell or wrapped in a <p>/heading
-  const target = cell?.querySelector('p, h2, h3, h4, h5, h6') || cell;
-  if (!target) return;
+  const target = cell.querySelector('p, h2, h3, h4, h5, h6') || cell;
   const a = document.createElement('a');
   a.href = profileUrl;
   a.append(...target.childNodes);
   target.append(a);
 }
 
+/** Turns a plain email address or phone number into a mailto:/tel: link. */
+function decorateContact({ row, cell }, key) {
+  row.className = `author-${key}`;
+  if (cell.querySelector('a')) return;
+  const target = cell.querySelector('p') || cell;
+  const value = target.textContent.trim();
+  const a = document.createElement('a');
+  a.href = key === 'email' ? `mailto:${value}` : `tel:${value.replace(/[^\d+]/g, '')}`;
+  a.textContent = value;
+  target.replaceChildren(a);
+}
+
 /**
- * @param {Element} block The block element
+ * @param {Element} block The author block
  */
 export default function decorate(block) {
-  const [pictureRow, nameRow, titleRow, linkRow] = [...block.children];
-  const name = nameRow?.textContent.trim() || '';
-  const profileUrl = linkRow?.querySelector('a[href]')?.href || '';
+  const rows = readRows(block);
+  const name = rows.get('name')?.cell.textContent.trim() || '';
+  const profileUrl = rows.get('link')?.cell.querySelector('a[href]')?.href || '';
 
-  if (pictureRow) decoratePhoto(pictureRow, name, profileUrl);
-  if (nameRow) decorateName(nameRow, profileUrl);
-  if (titleRow) titleRow.className = 'author-title';
-  if (linkRow) linkRow.className = 'author-link';
+  if (rows.has('photo')) decoratePhoto(rows.get('photo'), name, profileUrl);
+  else block.classList.add('author-no-photo');
+  if (rows.has('name')) decorateName(rows.get('name'), profileUrl);
+  if (rows.has('role')) rows.get('role').row.className = 'author-title';
+  ['phone', 'email'].forEach((key) => { if (rows.has(key)) decorateContact(rows.get(key), key); });
+  if (rows.has('link')) rows.get('link').row.className = 'author-link';
+
+  // display order: photo, name, role, phone, email, link
+  ['photo', 'name', 'role', 'phone', 'email', 'link']
+    .filter((key) => rows.has(key))
+    .forEach((key) => block.append(rows.get(key).row));
 }

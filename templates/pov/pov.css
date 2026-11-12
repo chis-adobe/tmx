@@ -4,7 +4,6 @@ body.pov main > .section > div {
 }
 
 body.pov main h1 {
-  margin-top: var(--spacing-s);
   font-size: var(--heading-font-size-xl);
 }
 
