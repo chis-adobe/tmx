@@ -79,7 +79,7 @@
       "id": "section",
       "components": [
         "accordion",
-        "article",
+        "pov-metadata",
         "author",
         "cards",
         "carousel",
@@ -90,6 +90,7 @@
         "hero",
         "image",
         "news-and-insights",
+        "press-release-metadata",
         "quote",
         "search",
         "section-title",

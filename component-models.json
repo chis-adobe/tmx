@@ -164,95 +164,6 @@
     ]
   },
   {
-    "id": "article",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "description": "The article headline, shown at the top of the page",
-        "required": true
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "description": "Optional bold line under the title, e.g. the marketplaces a press release covers"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "date",
-        "label": "Publish date",
-        "description": "Shown as written, e.g. September 22, 2026"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "city",
-        "label": "City",
-        "description": "Press releases: dateline city, e.g. Toronto. Shown as \"Date (CITY) –\" at the start of the text"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "tags",
-        "label": "Tags",
-        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Teaser image",
-        "description": "Used on cards that reference this article",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Teaser image alt text"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "summary",
-        "label": "Summary",
-        "description": "One line, used on cards that reference this article"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "author",
-        "label": "Author page",
-        "description": "Link to the author page, e.g. /authors/dean-mcpherson. Shown after the article text"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "contact",
-        "label": "Contact page",
-        "description": "Link to the media contact's author page, e.g. /authors/catherine-kee. Shown at the bottom"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "relatedDocument",
-        "label": "Related document URL",
-        "description": "Link to the PDF, shown right after the article text"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "relatedDocumentText",
-        "label": "Related document link text"
-      }
-    ]
-  },
-  {
     "id": "author",
     "fields": [
       {
@@ -462,6 +373,122 @@
         "name": "articles",
         "label": "Articles",
         "description": "Links to article pages (e.g. /povs/my-article), one per line. Each card's tag, title, date, author and image come from the linked article."
+      }
+    ]
+  },
+  {
+    "id": "pov-metadata",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "The article headline, shown at the top of the page",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "date",
+        "label": "Publish date",
+        "description": "Shown as written, e.g. September 22, 2026"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags",
+        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Teaser image",
+        "description": "Used on cards that reference this article",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Teaser image alt text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "summary",
+        "label": "Summary",
+        "description": "One line, used on cards that reference this article"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "author",
+        "label": "Author page",
+        "description": "Link to the author page, e.g. /authors/dean-mcpherson. Their card is shown after the article text"
+      }
+    ]
+  },
+  {
+    "id": "press-release-metadata",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "The release headline, shown at the top of the page",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "description": "Optional bold line under the title, e.g. the marketplaces it covers"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "date",
+        "label": "Publish date",
+        "description": "Shown as written, e.g. November 10, 2026"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "city",
+        "label": "City",
+        "description": "Dateline city, e.g. Toronto. Shown as \"Date (CITY) –\" at the start of the text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags",
+        "description": "Optional, separate with spaces or commas"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "contact",
+        "label": "Contact page",
+        "description": "Link to the media contact's author page, e.g. /authors/catherine-kee. Shown at the bottom of the page"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "relatedDocument",
+        "label": "Related document URL",
+        "description": "Link to the PDF, shown right after the release text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "relatedDocumentText",
+        "label": "Related document link text"
       }
     ]
   },

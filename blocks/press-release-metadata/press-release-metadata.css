@@ -1,0 +1,65 @@
+.press-release-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-s);
+  margin-bottom: var(--spacing-l);
+}
+
+.press-release-metadata .press-release-metadata-row[hidden],
+.press-release-metadata .press-release-metadata-label {
+  display: none;
+}
+
+.press-release-metadata p {
+  margin: 0;
+}
+
+.press-release-metadata .press-release-metadata-title h1 {
+  margin: var(--spacing-s) 0 0;
+}
+
+/* date | tags */
+.press-release-metadata .press-release-metadata-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-s);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+.press-release-metadata .press-release-metadata-meta > div {
+  display: flex;
+  align-items: center;
+}
+
+.press-release-metadata .press-release-metadata-date {
+  font-weight: 600;
+}
+
+.press-release-metadata .press-release-metadata-meta .press-release-metadata-date:not(:last-child)::after {
+  content: '|';
+  margin-left: var(--spacing-s);
+  color: var(--dark-color);
+}
+
+.press-release-metadata .press-release-metadata-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.press-release-metadata .press-release-metadata-tag-list li {
+  color: var(--link-color);
+  font-weight: 700;
+}
+
+/* description: the bold line under the title (e.g. the marketplaces the release covers) */
+.press-release-metadata .press-release-metadata-description {
+  font-weight: 700;
+  font-style: italic;
+  color: var(--heading-color);
+}

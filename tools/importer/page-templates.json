@@ -13,7 +13,9 @@
       "description": "TMX POV article pages and the POV listing",
       "urls": [
         "https://www.tmx.com/en/pov?id=171",
-        "https://www.tmx.com/en/pov"
+        "https://www.tmx.com/en/pov",
+        "https://www.tmx.com/en/pov?id=170",
+        "https://www.tmx.com/en/pov?id=169"
       ],
       "blocks": []
     },

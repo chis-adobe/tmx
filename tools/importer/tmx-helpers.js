@@ -18,6 +18,8 @@ const MIGRATED = {
   '/en/pov': '/povs/',
   '/pov': '/povs/',
   '/en/pov?id=171': '/povs/2026-tsx30-mining-sector',
+  '/en/pov?id=170': '/povs/2026-where-canada-is-winning',
+  '/en/pov?id=169': '/povs/2026-scaling-the-tsx30',
   '/en/newsroom/press-releases?id=1390': '/newsroom/press-releases/tmx-group-equity-financing-statistics-october-2026',
   '/en/newsroom/press-releases?id=1389': '/newsroom/press-releases/tmx-group-consolidated-trading-statistics-october-2026',
   '/en/newsroom/press-releases?id=1388': '/newsroom/press-releases/tmx-group-limited-declares-dividend-of-0-26-per-common-share',
@@ -30,6 +32,8 @@ export const migratedPath = (key) => MIGRATED[key];
 export const AUTHORS = {
   'Dean McPherson': '/authors/dean-mcpherson',
   'Catherine Kee': '/authors/catherine-kee',
+  'Richard Goodman': '/authors/richard-goodman',
+  'Robert Peterman': '/authors/robert-peterman',
 };
 
 /** Shared fragments referenced by article pages (boilerplate kept in one place). */
@@ -46,6 +50,14 @@ export const ARTICLE_TEASERS = {
   171: {
     tags: '#TSX30 #Mining',
     image: 'https://www.tmx.com/assets/application/img/ugc/blog/original/tsx30-thumb-pov.jpg',
+  },
+  170: {
+    tags: '#POV',
+    image: 'https://www.tmx.com/assets/application/img/ugc/blog/sign-tsx30-thumb.jpg',
+  },
+  169: {
+    tags: '#POV',
+    image: 'https://www.tmx.com/assets/application/img/ugc/blog/rob-tsx30-thumb.jpg',
   },
 };
 
@@ -115,22 +127,23 @@ export function block(document, name, cells) {
 }
 
 /**
- * Article details block (template pov / press-release). Always emits every row, in this order,
- * so the table has the same shape on every article (empty rows are ignored when rendered).
+ * Metadata blocks at the top of articles. Each always emits every row, in this order, so the
+ * table has the same shape on every page (empty rows are ignored when rendered).
  */
-export const ARTICLE_KEYS = ['Title', 'Description', 'Date', 'City', 'Tags', 'Image', 'Summary',
-  'Author', 'Contact', 'Related Document'];
+export const POV_KEYS = ['Title', 'Date', 'Tags', 'Image', 'Summary', 'Author'];
+export const PRESS_RELEASE_KEYS = ['Title', 'Description', 'Date', 'City', 'Tags', 'Contact',
+  'Related Document'];
 
-export function articleBlock(document, values) {
-  return block(document, 'Article', ARTICLE_KEYS.map((key) => [key, values[key] || '']));
-}
+const keyedBlock = (document, name, keys, values) => block(document, name, keys.map((key) => [key, values[key] || '']));
+
+export const povMetadataBlock = (document, values) => keyedBlock(document, 'POV Metadata', POV_KEYS, values);
+
+export const pressReleaseMetadataBlock = (document, values) => keyedBlock(document, 'Press Release Metadata', PRESS_RELEASE_KEYS, values);
 
 /** Author / contact person block: keyed rows, same order on every author page. */
 export const AUTHOR_KEYS = ['Photo', 'Name', 'Role', 'Phone', 'Email', 'Link'];
 
-export function authorBlock(document, values) {
-  return block(document, 'Author', AUTHOR_KEYS.map((key) => [key, values[key] || '']));
-}
+export const authorBlock = (document, values) => keyedBlock(document, 'Author', AUTHOR_KEYS, values);
 
 /** A link to a page on this site (emitted on SITE, relativized after import). */
 export function siteLink(document, path, label = `${SITE}${path}`) {
@@ -157,5 +170,9 @@ export function buildMain(document, sections) {
   });
   return main;
 }
+
+export const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '');
 
 export const text = (node) => (node ? node.textContent.replace(/\s+/g, ' ').trim() : '');

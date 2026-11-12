@@ -5,8 +5,8 @@ import { createPicture, moveInstrumentation, resolveContentPath } from '../../sc
  * News and Insights block.
  *
  * Authors only supply links to article pages (one or more, in any rows/cells). For each link the
- * block loads the referenced article, reads its `article` block (tags, date, teaser image,
- * summary) and title (h1), follows the article's author fragment to read the author's name,
+ * block loads the referenced article, reads its POV Metadata (or Press Release Metadata) block
+ * (title, tags, date, teaser image, summary), follows its Author link to read the author's name,
  * and renders a card. The card layout is enforced by the block; authors cannot change it.
  * A missing or failed reference degrades to a plain link card instead of breaking the page.
  */
@@ -56,7 +56,7 @@ function fetchDocument(path) {
  */
 async function readAuthorName(doc, articlePath) {
   const base = new URL(articlePath, window.location.href);
-  // the Author row of the article block (or a legacy author fragment); never e.g. a disclaimer
+  // the metadata block's Author link (or a legacy author fragment); never e.g. a disclaimer
   const link = [...doc.querySelectorAll('a[href*="/authors/"]')]
     .map((a) => toLocalPath(new URL(a.getAttribute('href'), base).href))
     .find(Boolean);
@@ -79,9 +79,10 @@ async function readAuthorName(doc, articlePath) {
 async function loadArticle(path) {
   const doc = await fetchDocument(path);
   if (!doc) return null;
-  const articleBlock = doc.querySelector('.article');
+  // POV Metadata / Press Release Metadata block (".article" = pages authored before the split)
+  const articleBlock = doc.querySelector('.pov-metadata, .press-release-metadata, .article');
   const config = articleBlock ? readBlockConfig(articleBlock) : {};
-  const configTitle = articleBlock ? readBlockConfig(articleBlock).title : '';
+  const configTitle = config.title;
   const title = (typeof configTitle === 'string' && configTitle.trim())
     || doc.querySelector('h1')?.textContent.trim() || '';
   if (!title && !articleBlock) return null;

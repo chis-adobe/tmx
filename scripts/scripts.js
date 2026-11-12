@@ -161,6 +161,53 @@ export function fetchPlaceholders() {
 }
 
 /**
+ * Reads a raw (undecorated) key/value block — first cell the key, second the value — into a
+ * Map of toClassName(key) -> value cell. Rows without a value cell are skipped.
+ * @param {Element} block
+ * @returns {Map<string, Element>}
+ */
+export function readKeyedRows(block) {
+  const rows = new Map();
+  [...(block?.children || [])].forEach((row) => {
+    const [label, value] = row.children;
+    if (!label || !value) return;
+    const key = toClassName(label.textContent);
+    if (key && isSafeObjectKey(key)) rows.set(key, value);
+  });
+  return rows;
+}
+
+/** True when a block cell holds text or an image. */
+export const cellHasValue = (cell) => !!cell
+  && (cell.textContent.trim() !== '' || !!cell.querySelector('img'));
+
+/**
+ * Builds a raw fragment block (decorated later like an authored one) for the first link in a
+ * cell. Only links to this site (or its aem.page / aem.live hosts) are used.
+ * @param {Element} cell Cell containing the link
+ * @returns {HTMLDivElement|null}
+ */
+export function buildFragmentBlock(cell) {
+  const raw = cell?.querySelector('a[href]')?.getAttribute('href');
+  if (!raw) return null;
+  const url = new URL(raw, window.location.href);
+  const sameSite = url.hostname === window.location.hostname
+    || url.hostname.endsWith('.aem.page') || url.hostname.endsWith('.aem.live');
+  if (!sameSite) return null;
+  const a = document.createElement('a');
+  a.href = url.pathname;
+  a.textContent = url.pathname;
+  const col = document.createElement('div');
+  col.append(a);
+  const row = document.createElement('div');
+  row.append(col);
+  const block = document.createElement('div');
+  block.className = 'fragment';
+  block.append(row);
+  return block;
+}
+
+/**
  * Builds a <picture> for an image URL. Same-origin images (the media bus) get optimized
  * renditions; any other URL is used as-is, because optimization only works on this origin.
  * @param {string} src Image URL (absolute or relative to the current page)

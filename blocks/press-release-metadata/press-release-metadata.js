@@ -1,18 +1,16 @@
 import { toClassName } from '../../scripts/aem.js';
 
 /**
- * Article details block — the key/value table at the top of an article (POV or press release).
+ * Press Release Metadata block — the key/value table at the top of a press release.
  *
  * Rows (key in the first cell, value in the second; empty rows are ignored):
- *   Title, Description, Date, City, Tags, Image, Summary, Author, Contact, Related Document
+ *   Title, Description, Date, City, Tags, Contact, Related Document
  *
- * The block renders the article header: title (the page's h1), date and tags, and the
- * description. Image and Summary feed article cards (News and Insights). City, Author, Contact
- * and Related Document are placed around the article text by the page template
- * (scripts/article-layout.js).
+ * Renders the release header: title (the page's h1), "date | tags" line and the bold
+ * description. The press-release template places City (dateline), Related Document and Contact
+ * around the release text (templates/press-release/press-release.js).
  */
 
-/** Rows shown in the header, in display order. */
 const HEADER_KEYS = ['title', 'date', 'tags', 'description'];
 const KEY_ALIASES = { 'related-doc': 'related-document' };
 
@@ -20,7 +18,7 @@ function tagList(value) {
   const tags = value.textContent.split(/[,\s]+/).map((t) => t.trim()).filter(Boolean);
   if (!tags.length) return null;
   const list = document.createElement('ul');
-  list.className = 'article-tag-list';
+  list.className = 'press-release-metadata-tag-list';
   tags.forEach((tag) => {
     const li = document.createElement('li');
     li.textContent = tag;
@@ -38,7 +36,7 @@ function titleHeading(value) {
 }
 
 /**
- * @param {Element} block The article block
+ * @param {Element} block The press-release-metadata block
  */
 export default function decorate(block) {
   const rows = new Map();
@@ -46,15 +44,15 @@ export default function decorate(block) {
     const [label, value] = row.children;
     let key = toClassName(label?.textContent || '');
     key = KEY_ALIASES[key] || key;
-    const empty = !value || (!value.textContent.trim() && !value.querySelector('img'));
-    row.classList.add('article-row');
-    if (key) row.classList.add(`article-${key}`);
+    const empty = !value || !value.textContent.trim();
+    row.classList.add('press-release-metadata-row');
+    if (key) row.classList.add(`press-release-metadata-${key}`);
     if (empty || !HEADER_KEYS.includes(key)) {
       row.hidden = true;
       return;
     }
-    label.classList.add('article-label');
-    value.classList.add('article-value');
+    label.classList.add('press-release-metadata-label');
+    value.classList.add('press-release-metadata-value');
     rows.set(key, { row, value });
   });
 
@@ -65,12 +63,10 @@ export default function decorate(block) {
   const list = tags && tagList(tags.value);
   if (list) tags.value.replaceChildren(list);
 
-  // header line: date | tags
   const meta = document.createElement('div');
-  meta.className = 'article-meta';
+  meta.className = 'press-release-metadata-meta';
   ['date', 'tags'].forEach((key) => { if (rows.has(key)) meta.append(rows.get(key).row); });
 
-  const header = [rows.get('title')?.row, meta.children.length ? meta : null, rows.get('description')?.row]
-    .filter(Boolean);
-  block.prepend(...header);
+  block.prepend(...[title?.row, meta.children.length ? meta : null, rows.get('description')?.row]
+    .filter(Boolean));
 }

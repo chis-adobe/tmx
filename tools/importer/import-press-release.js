@@ -6,13 +6,14 @@
  *     + /authors/<contact>              (media contact, when the release names one)
  *     + /disclaimers/press-release      ("About TMX Group" boilerplate, shared by every release)
  *
- * Page shape: an Article block (Title, Description, Date, City, Related Document, Contact) then the
+ * Page shape: a Press Release Metadata block (Title, Description, Date, City, Tags, Contact,
+ * Related Document) then the
  * release text as free text, then the disclaimer fragment. The press-release template puts the
  * dateline, related document and contact back around the text (scripts/article-layout.js).
  */
 import {
-  AUTHORS, DISCLAIMERS, articleBlock, authorBlock, block, buildMain, cloneContent, el, link,
-  metadata, migratedPath, siteLink, text, wrap,
+  AUTHORS, DISCLAIMERS, authorBlock, block, buildMain, cloneContent, el, link, metadata,
+  migratedPath, pressReleaseMetadataBlock, siteLink, slugify, text, wrap,
 } from './tmx-helpers.js';
 
 /** "November 10, 2026 (TORONTO) – " at the start of the first paragraph. */
@@ -20,9 +21,6 @@ const DATELINE = /^\s*([A-Z][a-z]+\.? \d{1,2}, \d{4})\s*\(([^)]+)\)\s*[–—-]\
 
 const isEmpty = (n) => !text(n) && !n.querySelector('img, a'); // text() also trims &nbsp;
 const titleCase = (s) => s.toLowerCase().replace(/\b\p{L}/gu, (c) => c.toUpperCase());
-const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  .replace(/[^a-z0-9]+/g, '-')
-  .replace(/^-|-$/g, '');
 
 /** Removes the dateline prefix from the paragraph's leading text and returns [date, city]. */
 function stripDateline(p) {
@@ -122,7 +120,6 @@ export default {
               Phone: details.Phone,
               Email: details.Email,
             }),
-            metadata(document, { Title: details.name, Robots: 'noindex', Template: 'pov' }),
           ]]),
         });
       }
@@ -145,7 +142,7 @@ export default {
     const description = descriptionEl ? text(descriptionEl) : '';
     const main = buildMain(document, [
       [
-        articleBlock(document, {
+        pressReleaseMetadataBlock(document, {
           Title: title,
           Description: description,
           Date: date,

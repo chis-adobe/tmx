@@ -1,0 +1,102 @@
+{
+  "definitions": [
+    {
+      "title": "POV Metadata",
+      "id": "pov-metadata",
+      "model": "pov-metadata",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"pov-metadata\"><div><div><p>Title</p></div><div><p>Article title</p></div></div><div><div><p>Date</p></div><div><p>Month D, YYYY</p></div></div><div><div><p>Tags</p></div><div><p>#POV</p></div></div><div><div><p>Image</p></div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Summary</p></div><div><p>Summary</p></div></div><div><div><p>Author</p></div><div></div></div></div>",
+          "fields": [
+            {
+              "name": "title",
+              "selector": "div:nth-child(1)>div:nth-child(2)"
+            },
+            {
+              "name": "date",
+              "selector": "div:nth-child(2)>div:nth-child(2)"
+            },
+            {
+              "name": "tags",
+              "selector": "div:nth-child(3)>div:nth-child(2)"
+            },
+            {
+              "name": "image",
+              "selector": "div:nth-child(4)>div:nth-child(2)>picture>img[src]"
+            },
+            {
+              "name": "imageAlt",
+              "selector": "div:nth-child(4)>div:nth-child(2)>picture>img[alt]"
+            },
+            {
+              "name": "summary",
+              "selector": "div:nth-child(5)>div:nth-child(2)"
+            },
+            {
+              "name": "author",
+              "selector": "div:nth-child(6)>div:nth-child(2)>p>a[href]"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "pov-metadata",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title",
+          "description": "The article headline, shown at the top of the page",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "date",
+          "label": "Publish date",
+          "description": "Shown as written, e.g. September 22, 2026"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "tags",
+          "label": "Tags",
+          "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Teaser image",
+          "description": "Used on cards that reference this article",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Teaser image alt text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "summary",
+          "label": "Summary",
+          "description": "One line, used on cards that reference this article"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "author",
+          "label": "Author page",
+          "description": "Link to the author page, e.g. /authors/dean-mcpherson. Their card is shown after the article text"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

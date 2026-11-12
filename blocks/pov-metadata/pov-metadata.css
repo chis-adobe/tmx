@@ -1,26 +1,25 @@
-.article {
+.pov-metadata {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-s);
   margin-bottom: var(--spacing-l);
 }
 
-.article .article-row[hidden],
-.article .article-label {
+.pov-metadata .pov-metadata-row[hidden],
+.pov-metadata .pov-metadata-label {
   display: none;
 }
 
-.article p {
+.pov-metadata p {
   margin: 0;
 }
 
-/* title */
-.article .article-title h1 {
+.pov-metadata .pov-metadata-title h1 {
   margin: var(--spacing-s) 0 0;
 }
 
 /* date | tags */
-.article .article-meta {
+.pov-metadata .pov-metadata-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -29,22 +28,22 @@
   color: var(--dark-color);
 }
 
-.article .article-meta > div {
+.pov-metadata .pov-metadata-meta > div {
   display: flex;
   align-items: center;
 }
 
-.article .article-date {
+.pov-metadata .pov-metadata-date {
   font-weight: 600;
 }
 
-.article .article-meta .article-date:not(:last-child)::after {
+.pov-metadata .pov-metadata-meta .pov-metadata-date:not(:last-child)::after {
   content: '|';
   margin-left: var(--spacing-s);
   color: var(--dark-color);
 }
 
-.article .article-tag-list {
+.pov-metadata .pov-metadata-tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
@@ -53,14 +52,7 @@
   list-style: none;
 }
 
-.article .article-tag-list li {
+.pov-metadata .pov-metadata-tag-list li {
   color: var(--link-color);
   font-weight: 700;
-}
-
-/* description: the bold line under the title (e.g. the marketplaces a release covers) */
-.article .article-description {
-  font-weight: 700;
-  font-style: italic;
-  color: var(--heading-color);
 }

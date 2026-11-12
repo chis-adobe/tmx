@@ -2,17 +2,39 @@
  * Import script for TMX POV pages (template "pov").
  *
  * Sources and outputs:
- *   https://www.tmx.com/en/pov?id=171 -> /povs/2026-tsx30-mining-sector (article)
- *                                       + /authors/dean-mcpherson (author page)
+ *   https://www.tmx.com/en/pov?id=NNN -> /povs/<slug> (article, see MIGRATED in tmx-helpers.js)
+ *                                       + /authors/<name> (author page: a single Author block;
+ *                                         robots noindex comes from the /metadata sheet)
  *                                       + /disclaimers/pov (shared POV disclaimer fragment)
  *   https://www.tmx.com/en/pov        -> /povs/ (article listing)
  */
 import {
-  ARTICLE_TEASERS, AUTHORS, DISCLAIMERS, SITE, articleBlock, authorBlock, block, buildMain,
-  cloneContent, el, image, link, metadata, sectionMetadata, siteLink, text, wrap,
+  ARTICLE_TEASERS, AUTHORS, DISCLAIMERS, SITE, authorBlock, block, buildMain, cloneContent, el,
+  image, link, metadata, migratedPath, povMetadataBlock, sectionMetadata, siteLink, slugify, text, wrap,
 } from './tmx-helpers.js';
 
-const ARTICLE_PATHS = { 171: '/povs/2026-tsx30-mining-sector' };
+const articlePath = (id) => migratedPath(`/en/pov?id=${id}`);
+
+/**
+ * A data table in the article becomes a Table block (header row first). Without this the
+ * importer would read the table's first header cell (e.g. "Company") as a block name.
+ */
+function tableBlock(document, table) {
+  const rows = [...table.querySelectorAll('tr')].map((tr) => [...tr.children].map((cell) => {
+    const div = document.createElement('div');
+    div.append(...[...cloneContent(document, cell).childNodes]);
+    return div;
+  }));
+  return block(document, 'Table', rows);
+}
+
+/** Clones a body node; a table (or a wrapper that only holds a table) becomes a Table block. */
+function withTableBlocks(document, node) {
+  if (node.tagName === 'TABLE') return tableBlock(document, node);
+  const tables = node.querySelectorAll ? [...node.querySelectorAll('table')] : [];
+  if (tables.length === 1 && text(node) === text(tables[0])) return tableBlock(document, tables[0]);
+  return cloneContent(document, node);
+}
 
 /* ---------- article + author fragment ---------- */
 
@@ -23,18 +45,24 @@ function authorFragment(document, authorBox) {
   const name = text(nameLink);
   const profile = nameLink.getAttribute('href');
 
-  // title = the text between the name and "Follow ... on", keeping its inline link and line break
+  // title = the text between the name and "Follow ... on", keeping its inline links and line
+  // breaks; formatting wrappers (e.g. <strong>) are unwrapped
   const title = document.createElement('p');
+  const appendRole = (n) => {
+    if (n.nodeType === 3) {
+      const value = n.textContent.replace(/\s+/g, ' ');
+      if (value.trim()) title.append(title.childNodes.length && title.lastChild.tagName !== 'BR' ? value : value.trimStart());
+    } else if (n.tagName === 'BR') {
+      if (title.childNodes.length && title.lastChild.tagName !== 'BR') title.append(document.createElement('br'));
+    } else if (n.tagName === 'A') {
+      title.append(cloneContent(document, n));
+    } else if (n.nodeType === 1) {
+      [...n.childNodes].forEach(appendRole);
+    }
+  };
   let node = textCol.querySelector('h3').nextSibling;
   while (node && !(node.nodeType === 3 && /Follow\s/.test(node.textContent))) {
-    if (node.nodeType === 3) {
-      const value = node.textContent.replace(/\s+/g, ' ');
-      if (value.trim()) title.append(value.trimStart());
-    } else if (node.tagName === 'BR') {
-      if (title.childNodes.length && title.lastChild.tagName !== 'BR') title.append(document.createElement('br'));
-    } else if (node.tagName === 'A') {
-      title.append(cloneContent(document, node));
-    }
+    appendRole(node);
     node = node.nextSibling;
   }
   while (title.lastChild && title.lastChild.tagName === 'BR') title.lastChild.remove();
@@ -51,7 +79,6 @@ function authorFragment(document, authorBox) {
         Role: title,
         Link: wrap(document, 'p', followLink),
       }),
-      metadata(document, { Title: name, Robots: 'noindex', Template: 'pov' }),
     ]]),
   };
 }
@@ -59,11 +86,9 @@ function authorFragment(document, authorBox) {
 function article(document, id, url) {
   const h1 = document.querySelector('h1');
   const title = text(h1);
-  const byline = [...document.querySelectorAll('span, div')]
-    .find((n) => n.children.length === 0 && /^[A-Z][a-z]+ \d{1,2}, \d{4}\s*\|/.test(text(n)));
-  const date = byline ? text(byline).replace(/\s*\|.*$/, '') : '';
+  const date = text(document.querySelector('.article-metadata .article-date')).replace(/\s*\|.*$/, '');
 
-  const body = [...document.querySelectorAll('p')].find((p) => text(p).startsWith('Since 2019')).parentElement;
+  const body = document.querySelector('.article-area');
   // the end-of-article author box (photo + name/title column) separates body copy from footnotes
   const children = [...body.children];
   const photoIndex = children.findIndex((c) => c.querySelector('img[alt^="Photo of"]'));
@@ -76,7 +101,7 @@ function article(document, id, url) {
   const teaser = ARTICLE_TEASERS[id] || {};
   const summary = text(intro[0]);
   const author = authorFragment(document, authorBox);
-  const authorPath = AUTHORS[author.name];
+  const authorPath = AUTHORS[author.name] || `/authors/${slugify(author.name)}`;
 
   // the closing copyright/disclaimer is shared by every POV: it lives in /disclaimers/pov;
   // footnotes stay with the article
@@ -86,7 +111,7 @@ function article(document, id, url) {
 
   const main = buildMain(document, [
     [
-      articleBlock(document, {
+      povMetadataBlock(document, {
         Title: title,
         Date: date,
         Tags: teaser.tags,
@@ -94,7 +119,7 @@ function article(document, id, url) {
         Summary: summary,
         Author: siteLink(document, authorPath),
       }),
-      ...intro.map((n) => cloneContent(document, n)),
+      ...intro.map((n) => withTableBlocks(document, n)),
     ],
     footnotes.length ? [
       ...footnotes.map((n) => cloneContent(document, n)),
@@ -118,7 +143,7 @@ function article(document, id, url) {
   ]]);
 
   return [
-    { element: main, path: ARTICLE_PATHS[id] || new URL(url).pathname },
+    { element: main, path: articlePath(id) || new URL(url).pathname },
     { element: author.main, path: authorPath },
     { element: disclaimerMain, path: DISCLAIMERS.pov },
   ];
@@ -138,7 +163,7 @@ function listing(document) {
     return [image(document, row.querySelector('img').getAttribute('src'), rowTitle), content];
   });
 
-  const featured = `${SITE}${ARTICLE_PATHS[171]}`;
+  const featured = `${SITE}${articlePath(171)}`;
   const featuredLinks = document.createElement('div');
   featuredLinks.append(wrap(document, 'p', el(document, 'a', featured, { href: featured })));
 
