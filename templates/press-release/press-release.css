@@ -12,31 +12,31 @@ body.press-release main h2 {
 }
 
 /* dateline: "November 10, 2026 (TORONTO) – " at the start of the text */
-body.press-release main .article-city {
+body.press-release main .article-dateline-city {
   text-transform: uppercase;
 }
 
 /* related document, right after the text */
-body.press-release main .article-related-document a {
+body.press-release main .article-related a {
   font-weight: 700;
 }
 
 /* media contact, bottom of the page */
-body.press-release main .article-contact .article-contact-label {
+body.press-release main .article-contact-section .article-contact-label {
   margin-bottom: var(--spacing-s);
   font-weight: 700;
   color: var(--heading-color);
 }
 
-body.press-release main .article-contact .author {
+body.press-release main .article-contact-section .author {
   padding: 0;
   border: 0;
 }
 
-body.press-release main .article-contact .author .author-name {
+body.press-release main .article-contact-section .author .author-name {
   font-size: var(--body-font-size-m);
 }
 
-body.press-release main .article-contact .author .author-title {
+body.press-release main .article-contact-section .author .author-title {
   margin-top: 0;
 }

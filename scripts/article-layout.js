@@ -75,7 +75,7 @@ function prefixCity(section, block, date, city) {
   const dateline = document.createElement('span');
   dateline.className = 'article-dateline';
   const cityEl = document.createElement('span');
-  cityEl.className = 'article-city';
+  cityEl.className = 'article-dateline-city';
   cityEl.textContent = city;
   dateline.append(date ? `${date} (` : '(', cityEl, ') – ');
   first.prepend(dateline);
@@ -85,8 +85,8 @@ function relatedDocument(cell) {
   const link = cell.querySelector('a[href]');
   if (!link) return null;
   const p = document.createElement('p');
-  p.className = 'article-related-document';
-  const label = labelElement('strong', 'article-related-document-label', 'relatedDocument');
+  p.className = 'article-related';
+  const label = labelElement('strong', 'article-related-label', 'relatedDocument');
   const a = link.cloneNode(true);
   a.removeAttribute('class');
   p.append(label, document.createElement('br'), a);
@@ -128,7 +128,7 @@ export default function decorateArticleLayout(main) {
     if (contact) {
       const label = labelElement('p', 'article-contact-label', 'contact');
       const contactSection = newSection(label, contact);
-      contactSection.classList.add('article-contact');
+      contactSection.classList.add('article-contact-section');
       main.append(contactSection);
     }
   }
