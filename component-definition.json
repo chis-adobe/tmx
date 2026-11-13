@@ -337,7 +337,7 @@
           "model": "pov-metadata",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"pov-metadata\"><div><div><p>Title</p></div><div><p>Article title</p></div></div><div><div><p>Date</p></div><div><p>Month D, YYYY</p></div></div><div><div><p>Tags</p></div><div><p>#POV</p></div></div><div><div><p>Image</p></div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Summary</p></div><div><p>Summary</p></div></div><div><div><p>Author</p></div><div></div></div></div>",
+              "unsafeHTML": "<div class=\"pov-metadata\"><div><div><p>Title</p></div><div><p>Article title</p></div></div><div><div><p>Date</p></div><div><p>Month D, YYYY</p></div></div><div><div><p>Tags</p></div><div><p>pov</p></div></div><div><div><p>Image</p></div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Summary</p></div><div><p>Summary</p></div></div><div><div><p>Author</p></div><div></div></div></div>",
               "fields": [
                 {
                   "name": "title",
@@ -377,7 +377,7 @@
           "model": "pov-search",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"pov-search\"><div><div><p>Placeholder</p></div><div><p>Browse Articles, Events & Multimedia</p></div></div><div><div><p>Search</p></div><div><p>Search</p></div></div><div><div><p>Category</p></div><div><p>Choose a Category</p></div></div><div><div><p>Categories</p></div><div><p>Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines</p></div></div><div><div><p>Filter</p></div><div><p>Filter</p></div></div><div><div><p>Reset</p></div><div><p>Reset</p></div></div><div><div><p>Load More</p></div><div><p>Load More</p></div></div><div><div><p>No Results</p></div><div><p>No POVs match your search.</p></div></div><div><div><p>Page Size</p></div><div><p>6</p></div></div></div>",
+              "unsafeHTML": "<div class=\"pov-search\"><div><div><p>Placeholder</p></div><div><p>Browse Articles, Events & Multimedia</p></div></div><div><div><p>Search</p></div><div><p>Search</p></div></div><div><div><p>Category</p></div><div><p>Choose a Category</p></div></div><div><div><p>Categories</p></div><div><p>clean-technology, energy, life-sciences, mining, utilities-pipelines</p></div></div><div><div><p>Filter</p></div><div><p>Filter</p></div></div><div><div><p>Reset</p></div><div><p>Reset</p></div></div><div><div><p>Load More</p></div><div><p>Load More</p></div></div><div><div><p>No Results</p></div><div><p>No POVs match your search.</p></div></div><div><div><p>Page Size</p></div><div><p>6</p></div></div></div>",
               "fields": [
                 {
                   "name": "query_placeholder",

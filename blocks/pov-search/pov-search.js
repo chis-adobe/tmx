@@ -3,6 +3,7 @@ import { getBlockId } from '../../scripts/scripts.js';
 import {
   POV_INDEX, cardHeadingLevel, loadPovIndex, renderPovCard, toSitePath,
 } from '../../scripts/pov.js';
+import { loadTaxonomy, tagKeys, tagLabel } from '../../scripts/taxonomy.js';
 
 /**
  * POV Search block — searches the POV query index and lists matching POVs as small cards
@@ -12,7 +13,8 @@ import {
  *   Placeholder  search field placeholder (also its accessible label)
  *   Search       search button label
  *   Category     first option of the category list ("all categories")
- *   Categories   comma-separated categories; a POV matches when a tag or its text names it
+ *   Categories   comma-separated tag keys from the taxonomy (shown with their labels); a POV
+ *                matches when it carries the tag
  *   Filter       filter button label
  *   Reset        reset button label
  *   Load More    load-more button label
@@ -32,10 +34,10 @@ function dateValue(pov) {
 }
 
 function matches(pov, terms, category) {
-  const text = normalize([pov.title, pov.description, pov.tags.join(' ')].join(' '));
+  // keywords match the title, description and tag labels; a category matches by tag key
+  const text = normalize([pov.title, pov.description, ...pov.tags.map(tagLabel)].join(' '));
   if (!terms.every((term) => text.includes(term))) return false;
-  if (!category) return true;
-  return pov.tags.some((tag) => normalize(tag) === category) || text.includes(category);
+  return !category || pov.tags.includes(category);
 }
 
 function button(label, className, type = 'button') {
@@ -65,13 +67,12 @@ function buildForm(config, id) {
   all.value = '';
   all.textContent = config.category || '';
   select.append(all);
-  [].concat(config.categories || []).join(',').split(',').map((name) => name.trim()).filter(Boolean)
-    .forEach((name) => {
-      const option = document.createElement('option');
-      option.value = normalize(name);
-      option.textContent = name;
-      select.append(option);
-    });
+  tagKeys([].concat(config.categories || []).join(',')).forEach((key) => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = tagLabel(key);
+    select.append(option);
+  });
 
   const searchRow = document.createElement('div');
   searchRow.className = 'pov-search-query';
@@ -94,6 +95,7 @@ function buildForm(config, id) {
  */
 export default async function decorate(block) {
   const config = readBlockConfig(block);
+  await loadTaxonomy();
   const id = getBlockId('pov-search');
   const pageSize = Math.max(1, parseInt(config['page-size'], 10) || DEFAULT_PAGE_SIZE);
   const source = toSitePath(config.source || POV_INDEX) || POV_INDEX;
@@ -145,7 +147,7 @@ export default async function decorate(block) {
   // restore a shared search from the URL
   const params = new URLSearchParams(window.location.search);
   input.value = params.get('q') || '';
-  const category = normalize(params.get('category'));
+  const category = tagKeys(params.get('category'))[0] || '';
   if ([...select.options].some((o) => o.value === category)) select.value = category;
 
   form.addEventListener('submit', (e) => {

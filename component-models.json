@@ -411,7 +411,7 @@
         "valueType": "string",
         "name": "tags",
         "label": "Tags",
-        "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+        "description": "Tag keys from the block library options sheet, separated by commas, e.g. tsx30, mining (no #)"
       },
       {
         "component": "reference",
@@ -472,7 +472,7 @@
         "valueType": "string",
         "name": "filter_categories",
         "label": "Categories",
-        "description": "Comma-separated categories; a POV matches when a tag or its text names the category"
+        "description": "Comma-separated tag keys from the block library options sheet; each is shown with its label and matches POVs carrying that tag"
       },
       {
         "component": "text",

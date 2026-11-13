@@ -3,14 +3,15 @@
  * `metadata` holds defaults applied to every page on this template (page metadata wins),
  * so authors don't have to wire the shared header and footer fragments on each page.
  *
- * A POV article's data lives in its page metadata (Date, Tags, Image, Description, Author).
+ * A POV article's data lives in its page metadata (Date, Tags, Image, Description, Author);
+ * Tags holds taxonomy keys (scripts/taxonomy.js).
  * This template renders the "date | tags" line under the title and adds the Author's card
  * (their /authors/ page, loaded as a fragment) right after the article text. Pages that still
  * use a POV Metadata block keep working: the block renders the header and its Author row wins.
  */
 import { getMetadata } from '../../scripts/aem.js';
 import { buildFragmentBlock, cellHasValue, readKeyedRows } from '../../scripts/scripts.js';
-import { splitTags } from '../../scripts/pov.js';
+import { formatTag, loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
 
 export const metadata = {
   nav: '/fragments/header',
@@ -28,12 +29,13 @@ function linkCell(href) {
 
 /**
  * "date | tags" line built from page metadata, placed right after the h1. It is a paragraph
- * (default content), so page decoration does not mistake it for a block.
+ * (default content), so page decoration does not mistake it for a block. Tags are taxonomy keys,
+ * shown as TMX hashtags ("#Mining") once the labels have loaded, without delaying the page.
  */
 function addByline(h1) {
   const date = getMetadata('date');
-  const tags = splitTags(getMetadata('article:tag') || getMetadata('tags'));
-  if (!date && !tags.length) return;
+  const tagsValue = getMetadata('article:tag') || getMetadata('tags');
+  if (!date && !tagsValue) return;
   const byline = document.createElement('p');
   byline.className = 'pov-byline';
   if (date) {
@@ -42,13 +44,16 @@ function addByline(h1) {
     span.textContent = date;
     byline.append(span);
   }
-  tags.forEach((tag) => {
-    const span = document.createElement('span');
-    span.className = 'pov-byline-tag';
-    span.textContent = tag;
-    byline.append(span);
-  });
   h1.after(byline);
+  if (!tagsValue) return;
+  loadTaxonomy().then(() => {
+    tagKeys(tagsValue).forEach((key) => {
+      const span = document.createElement('span');
+      span.className = 'pov-byline-tag';
+      span.textContent = formatTag(key, { hash: true });
+      byline.append(span);
+    });
+  });
 }
 
 /** Runs before the page is decorated, on the raw (authored) DOM. */

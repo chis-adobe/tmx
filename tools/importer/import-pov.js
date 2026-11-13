@@ -159,7 +159,7 @@ const SEARCH_ROWS = [
   ['Placeholder', 'Browse Articles, Events & Multimedia'],
   ['Search', 'Search'],
   ['Category', 'Choose a Category'],
-  ['Categories', 'Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines'],
+  ['Categories', 'clean-technology, energy, life-sciences, mining, utilities-pipelines'],
   ['Filter', 'Filter'],
   ['Reset', 'Reset'],
   ['Load More', 'Load More'],

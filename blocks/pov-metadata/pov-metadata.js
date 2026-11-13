@@ -1,4 +1,5 @@
 import { toClassName } from '../../scripts/aem.js';
+import { formatTag, loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
 
 /**
  * POV Metadata block — the key/value table at the top of a POV article.
@@ -14,13 +15,14 @@ import { toClassName } from '../../scripts/aem.js';
 const HEADER_KEYS = ['title', 'date', 'tags'];
 
 function tagList(value) {
-  const tags = value.textContent.split(/[,\s]+/).map((t) => t.trim()).filter(Boolean);
+  // taxonomy keys, shown with their approved labels
+  const tags = tagKeys(value.textContent);
   if (!tags.length) return null;
   const list = document.createElement('ul');
   list.className = 'pov-metadata-tag-list';
-  tags.forEach((tag) => {
+  tags.forEach((key) => {
     const li = document.createElement('li');
-    li.textContent = tag;
+    li.textContent = formatTag(key, { hash: true });
     list.append(li);
   });
   return list;
@@ -37,7 +39,8 @@ function titleHeading(value) {
 /**
  * @param {Element} block The pov-metadata block
  */
-export default function decorate(block) {
+export default async function decorate(block) {
+  await loadTaxonomy();
   const rows = new Map();
   [...block.children].forEach((row) => {
     const [label, value] = row.children;

@@ -45,20 +45,25 @@ export const DISCLAIMERS = {
 
 /**
  * Teaser data that tmx.com only shows on the POV listing, keyed by article id.
- * (The article page itself carries no tags or teaser image.)
+ * (The article page itself carries no tags or teaser image.) Tags are taxonomy keys from the
+ * block library's options sheet, without "#" (the site adds it where TMX shows hashtags).
  */
 export const ARTICLE_TEASERS = {
   171: {
-    tags: '#TSX30 #Mining',
+    tags: 'tsx30, mining',
     image: 'https://www.tmx.com/assets/application/img/ugc/blog/original/tsx30-thumb-pov.jpg',
   },
   170: {
-    tags: '#POV',
+    tags: 'pov',
     image: 'https://www.tmx.com/assets/application/img/ugc/blog/sign-tsx30-thumb.jpg',
   },
   169: {
-    tags: '#POV',
+    tags: 'pov',
     image: 'https://www.tmx.com/assets/application/img/ugc/blog/rob-tsx30-thumb.jpg',
+  },
+  168: {
+    tags: 'pov, life-sciences',
+    image: 'https://www.tmx.com/assets/application/img/ugc/blog/tmx-pov-thumb3.jpg',
   },
 };
 

@@ -5,18 +5,15 @@
  * A POV's card data comes from the POV query index (/povs/query-index.json). Pages that are not
  * in the index yet (e.g. only previewed) fall back to the page's own metadata, read from its
  * <head>: og:title, description, og:image, date, article:tag (tags) and author.
+ * Tags are kept as taxonomy keys (scripts/taxonomy.js) and shown as "#Label" on cards.
  */
 import { createPicture, resolveContentPath } from './scripts.js';
+import { formatTag, loadTaxonomy, tagKeys } from './taxonomy.js';
 
 export const POV_INDEX = '/povs/query-index.json';
 
 const indexCache = new Map();
 const pageCache = new Map();
-
-/** Splits a tags value ("#TSX30 #Mining" or "#TSX30, #Mining") into a list. */
-export function splitTags(value) {
-  return String(value || '').split(/[,\s]+/).map((t) => t.trim()).filter(Boolean);
-}
 
 /**
  * Same-origin path for an authored link, or null when it is not a page on this site.
@@ -57,7 +54,7 @@ function toPov(row) {
     description: row.description || '',
     image: normalizeImage(row.image),
     date: row.date || '',
-    tags: splitTags(row.tags),
+    tags: tagKeys(row.tags),
     author: row.author || '',
   };
 }
@@ -71,6 +68,7 @@ function toPov(row) {
 export function loadPovIndex(source = POV_INDEX) {
   if (!indexCache.has(source)) {
     const load = async () => {
+      await loadTaxonomy();
       const rows = [];
       let offset = 0;
       // the index API pages results; stop on the last page (or after a sane upper bound)
@@ -93,7 +91,8 @@ export function loadPovIndex(source = POV_INDEX) {
 /** Reads card data from a page's <head> (its metadata), for pages not in the index. */
 function loadFromPage(path) {
   if (!pageCache.has(path)) {
-    const request = fetch(resolveContentPath(path))
+    const request = loadTaxonomy()
+      .then(() => fetch(resolveContentPath(path)))
       .then((resp) => (resp.ok ? resp.text() : null))
       .then((html) => {
         if (!html) return null;
@@ -150,10 +149,11 @@ function textEl(tag, className, text) {
   return el;
 }
 
+/** Tag keys as TMX hashtags ("#Mining"), labels from the taxonomy. */
 function tagList(tags) {
   const ul = document.createElement('ul');
   ul.className = 'pov-card-tags';
-  tags.forEach((tag) => ul.append(textEl('li', '', tag)));
+  tags.forEach((key) => ul.append(textEl('li', '', formatTag(key, { hash: true }))));
   return ul;
 }
 

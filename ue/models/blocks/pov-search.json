@@ -6,7 +6,7 @@
       "model": "pov-search",
       "plugins": {
         "da": {
-          "unsafeHTML": "<div class=\"pov-search\"><div><div><p>Placeholder</p></div><div><p>Browse Articles, Events & Multimedia</p></div></div><div><div><p>Search</p></div><div><p>Search</p></div></div><div><div><p>Category</p></div><div><p>Choose a Category</p></div></div><div><div><p>Categories</p></div><div><p>Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines</p></div></div><div><div><p>Filter</p></div><div><p>Filter</p></div></div><div><div><p>Reset</p></div><div><p>Reset</p></div></div><div><div><p>Load More</p></div><div><p>Load More</p></div></div><div><div><p>No Results</p></div><div><p>No POVs match your search.</p></div></div><div><div><p>Page Size</p></div><div><p>6</p></div></div></div>",
+          "unsafeHTML": "<div class=\"pov-search\"><div><div><p>Placeholder</p></div><div><p>Browse Articles, Events & Multimedia</p></div></div><div><div><p>Search</p></div><div><p>Search</p></div></div><div><div><p>Category</p></div><div><p>Choose a Category</p></div></div><div><div><p>Categories</p></div><div><p>clean-technology, energy, life-sciences, mining, utilities-pipelines</p></div></div><div><div><p>Filter</p></div><div><p>Filter</p></div></div><div><div><p>Reset</p></div><div><p>Reset</p></div></div><div><div><p>Load More</p></div><div><p>Load More</p></div></div><div><div><p>No Results</p></div><div><p>No POVs match your search.</p></div></div><div><div><p>Page Size</p></div><div><p>6</p></div></div></div>",
           "fields": [
             {
               "name": "query_placeholder",
@@ -79,7 +79,7 @@
           "valueType": "string",
           "name": "filter_categories",
           "label": "Categories",
-          "description": "Comma-separated categories; a POV matches when a tag or its text names the category"
+          "description": "Comma-separated tag keys from the block library options sheet; each is shown with its label and matches POVs carrying that tag"
         },
         {
           "component": "text",

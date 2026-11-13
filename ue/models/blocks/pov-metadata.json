@@ -6,7 +6,7 @@
       "model": "pov-metadata",
       "plugins": {
         "da": {
-          "unsafeHTML": "<div class=\"pov-metadata\"><div><div><p>Title</p></div><div><p>Article title</p></div></div><div><div><p>Date</p></div><div><p>Month D, YYYY</p></div></div><div><div><p>Tags</p></div><div><p>#POV</p></div></div><div><div><p>Image</p></div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Summary</p></div><div><p>Summary</p></div></div><div><div><p>Author</p></div><div></div></div></div>",
+          "unsafeHTML": "<div class=\"pov-metadata\"><div><div><p>Title</p></div><div><p>Article title</p></div></div><div><div><p>Date</p></div><div><p>Month D, YYYY</p></div></div><div><div><p>Tags</p></div><div><p>pov</p></div></div><div><div><p>Image</p></div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div><p>Summary</p></div><div><p>Summary</p></div></div><div><div><p>Author</p></div><div></div></div></div>",
           "fields": [
             {
               "name": "title",
@@ -65,7 +65,7 @@
           "valueType": "string",
           "name": "tags",
           "label": "Tags",
-          "description": "Separate tags with spaces or commas, e.g. #TSX30 #Mining"
+          "description": "Tag keys from the block library options sheet, separated by commas, e.g. tsx30, mining (no #)"
         },
         {
           "component": "reference",
