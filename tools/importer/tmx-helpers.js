@@ -20,6 +20,7 @@ const MIGRATED = {
   '/en/pov?id=171': '/povs/2026-tsx30-mining-sector',
   '/en/pov?id=170': '/povs/2026-where-canada-is-winning',
   '/en/pov?id=169': '/povs/2026-scaling-the-tsx30',
+  '/en/pov?id=168': '/povs/2026-apotex-life-sciences-ipo',
   '/en/newsroom/press-releases?id=1390': '/newsroom/press-releases/tmx-group-equity-financing-statistics-october-2026',
   '/en/newsroom/press-releases?id=1389': '/newsroom/press-releases/tmx-group-consolidated-trading-statistics-october-2026',
   '/en/newsroom/press-releases?id=1388': '/newsroom/press-releases/tmx-group-limited-declares-dividend-of-0-26-per-common-share',

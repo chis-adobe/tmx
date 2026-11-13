@@ -1,0 +1,32 @@
+@import url('../../styles/pov-card.css');
+
+.pov-cards {
+  display: grid;
+  gap: var(--spacing-l);
+}
+
+.pov-cards .pov-cards-small {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pov-cards .pov-cards-small > li + li {
+  padding-top: var(--spacing-m);
+  border-top: var(--border-width-s) solid #d7dde0;
+}
+
+@media (width >= 900px) {
+  .pov-cards {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+    gap: var(--spacing-xxl);
+  }
+
+  .pov-cards.pov-cards-single {
+    grid-template-columns: 1fr;
+  }
+}

@@ -29,3 +29,34 @@ body.pov main .cards .cards-card-body p {
 body.pov main .cards .cards-card-body a {
   color: inherit;
 }
+
+/* "date | tags" line under the article title (from page metadata) */
+body.pov main .pov-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-s);
+  margin-bottom: var(--spacing-l);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+body.pov main .pov-byline p {
+  margin: 0;
+  font-weight: 600;
+}
+
+body.pov main .pov-byline-date:not(:last-child)::after {
+  content: '|';
+  margin-left: var(--spacing-s);
+}
+
+body.pov main .pov-byline-tags {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 700;
+  color: var(--link-color);
+}

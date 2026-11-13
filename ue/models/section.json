@@ -79,7 +79,6 @@
       "id": "section",
       "components": [
         "accordion",
-        "pov-metadata",
         "author",
         "cards",
         "carousel",
@@ -90,6 +89,9 @@
         "hero",
         "image",
         "news-and-insights",
+        "pov-cards",
+        "pov-metadata",
+        "pov-search",
         "press-release-metadata",
         "quote",
         "search",

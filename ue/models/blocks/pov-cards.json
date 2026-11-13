@@ -1,0 +1,35 @@
+{
+  "definitions": [
+    {
+      "title": "POV Cards",
+      "id": "pov-cards",
+      "model": "pov-cards",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"pov-cards\"><div><div><p><a href=\"/povs/\">Featured POV</a></p><p><a href=\"/povs/\">POV</a></p></div></div></div>",
+          "fields": [
+            {
+              "name": "articles",
+              "selector": "div:nth-child(1)>div"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "pov-cards",
+      "fields": [
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "articles",
+          "label": "POVs",
+          "description": "Links to POV pages. The first is shown large; the next four (at most) are shown small beside it. Each card's image, title, tags, date and description come from the linked POV."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

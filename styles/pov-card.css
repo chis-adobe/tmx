@@ -1,0 +1,130 @@
+/*
+ * POV cards (scripts/pov.js renderPovCard), shared by the news-and-insights, pov-cards and
+ * pov-search blocks; each block's CSS imports this file.
+ *   .pov-card-teaser  vertical: image, title, description clamped to two lines
+ *   .pov-card-large   vertical: image, title, tags, date, description
+ *   .pov-card-small   horizontal: image beside title, date, tags
+ */
+.pov-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.pov-card:hover,
+.pov-card:focus-visible {
+  text-decoration: none;
+}
+
+.pov-card:hover .pov-card-title,
+.pov-card:focus-visible .pov-card-title {
+  text-decoration: underline;
+}
+
+.pov-card .pov-card-image {
+  flex: 0 0 auto;
+  line-height: 0;
+}
+
+.pov-card .pov-card-image img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.pov-card .pov-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--spacing-s) 0 0;
+}
+
+.pov-card .pov-card-title {
+  margin: 0;
+  color: var(--heading-color);
+  font-size: var(--body-font-size-s);
+  line-height: 1.3;
+}
+
+.pov-card p {
+  margin: 0;
+}
+
+.pov-card .pov-card-date {
+  font-size: 13px;
+  color: var(--dark-color);
+}
+
+.pov-card .pov-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--link-color);
+}
+
+.pov-card .pov-card-description {
+  font-size: var(--body-font-size-xs);
+}
+
+/* teaser: shadowed card, description clamped to two lines with an ellipsis */
+.pov-card.pov-card-teaser {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+}
+
+.pov-card.pov-card-teaser .pov-card-body {
+  padding: var(--spacing-s) var(--spacing-m) var(--spacing-m);
+}
+
+.pov-card.pov-card-teaser .pov-card-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* large */
+.pov-card.pov-card-large .pov-card-title {
+  font-size: var(--heading-font-size-s);
+}
+
+.pov-card.pov-card-large .pov-card-description {
+  font-size: var(--body-font-size-s);
+}
+
+/* small: image left, text right */
+.pov-card.pov-card-small {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-s);
+}
+
+.pov-card.pov-card-small .pov-card-image {
+  width: 144px;
+}
+
+.pov-card.pov-card-small .pov-card-image img {
+  aspect-ratio: 144 / 76;
+}
+
+.pov-card.pov-card-small .pov-card-body {
+  flex: 1 1 auto;
+  gap: 4px;
+  padding: 0;
+}
+
+.pov-card.pov-card-small .pov-card-title {
+  font-size: var(--body-font-size-xs);
+}
+
+.pov-card.pov-card-fallback .pov-card-body {
+  padding: var(--spacing-s) 0;
+}

@@ -177,27 +177,27 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "name",
+        "name": "person_name",
         "label": "Name",
         "required": true
       },
       {
         "component": "richtext",
         "valueType": "string",
-        "name": "title",
+        "name": "person_title",
         "label": "Role"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "phone",
+        "name": "contact_phone",
         "label": "Phone",
         "description": "Optional, e.g. 416-671-1704"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "email",
+        "name": "contact_email",
         "label": "Email",
         "description": "Optional, e.g. name@tmx.com"
       },
@@ -377,6 +377,18 @@
     ]
   },
   {
+    "id": "pov-cards",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "articles",
+        "label": "POVs",
+        "description": "Links to POV pages. The first is shown large; the next four (at most) are shown small beside it. Each card's image, title, tags, date and description come from the linked POV."
+      }
+    ]
+  },
+  {
     "id": "pov-metadata",
     "fields": [
       {
@@ -428,6 +440,74 @@
         "name": "author",
         "label": "Author page",
         "description": "Link to the author page, e.g. /authors/dean-mcpherson. Their card is shown after the article text"
+      }
+    ]
+  },
+  {
+    "id": "pov-search",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "query_placeholder",
+        "label": "Placeholder",
+        "description": "Search field placeholder"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "query_search",
+        "label": "Search",
+        "description": "Search button label"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filter_category",
+        "label": "Category",
+        "description": "First (all categories) option"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filter_categories",
+        "label": "Categories",
+        "description": "Comma-separated categories; a POV matches when a tag or its text names the category"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filter_filter",
+        "label": "Filter",
+        "description": "Filter button label"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filter_reset",
+        "label": "Reset",
+        "description": "Reset button label"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "results_loadMore",
+        "label": "Load More",
+        "description": "Load-more button label"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "results_noResults",
+        "label": "No Results",
+        "description": "Message when nothing matches"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "results_pageSize",
+        "label": "Page Size",
+        "description": "Results per page"
       }
     ]
   },

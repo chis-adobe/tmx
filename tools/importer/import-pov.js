@@ -151,43 +151,40 @@ function article(document, id, url) {
 
 /* ---------- listing ---------- */
 
-function listing(document) {
-  const rows = [...document.querySelectorAll('.blog-featured-row')].map((row) => {
-    const id = row.getAttribute('data-id');
-    const rowTitle = text(row.querySelector('.title'));
-    const content = document.createElement('div');
-    content.append(
-      wrap(document, 'p', link(document, `/en/pov?id=${id}`, rowTitle)),
-      el(document, 'p', text(row.querySelector('.date-sector'))),
-    );
-    return [image(document, row.querySelector('img').getAttribute('src'), rowTitle), content];
-  });
+/** Featured POVs on tmx.com/en/pov (first = large card), kept only when migrated. */
+const FEATURED_IDS = [171, 170, 169, 168, 167];
 
-  const featured = `${SITE}${articlePath(171)}`;
-  const featuredLinks = document.createElement('div');
-  featuredLinks.append(wrap(document, 'p', el(document, 'a', featured, { href: featured })));
+/** POV Search block labels and categories, as shown on tmx.com/en/pov. */
+const SEARCH_ROWS = [
+  ['Placeholder', 'Browse Articles, Events & Multimedia'],
+  ['Search', 'Search'],
+  ['Category', 'Choose a Category'],
+  ['Categories', 'Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines'],
+  ['Filter', 'Filter'],
+  ['Reset', 'Reset'],
+  ['Load More', 'Load More'],
+  ['No Results', 'No POVs match your search.'],
+  ['Page Size', '6'],
+];
+
+function listing(document) {
+  // POV Cards: links to the migrated featured POVs; the block loads each card's data
+  const featured = document.createElement('div');
+  FEATURED_IDS.map((id) => articlePath(id)).filter(Boolean).forEach((path) => {
+    const href = `${SITE}${path}`;
+    featured.append(wrap(document, 'p', el(document, 'a', href, { href })));
+  });
 
   const disclaimer = [...document.querySelectorAll('*')]
     .find((n) => n.children.length === 0 && text(n).startsWith('This information is provided for information purposes only'));
-
-  const placeholder = [
-    el(document, 'p', 'Placeholder: search, filters and Load More will be connected to the query index.'),
-    el(document, 'p', `Search: ${document.querySelector('input[placeholder="Search"]')?.getAttribute('aria-label') || 'Browse Articles, Events & Multimedia'}`),
-    el(document, 'p', 'Category: Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines'),
-    el(document, 'p', 'Content type: Events, Podcasts, Video, Articles'),
-    el(document, 'p', 'Filter | Reset'),
-    el(document, 'p', 'Load More'),
-    sectionMetadata(document, 'placeholder'),
-  ];
 
   const main = buildMain(document, [
     [
       el(document, 'h1', 'TMX POV'),
       el(document, 'h2', 'Featured'),
-      block(document, 'News and Insights (featured)', [[featuredLinks]]),
-      block(document, 'Cards', rows),
+      block(document, 'POV Cards', [[featured]]),
     ],
-    placeholder,
+    [block(document, 'POV Search', SEARCH_ROWS)],
     [
       el(document, 'p', text(disclaimer)),
       sectionMetadata(document, 'legal'),

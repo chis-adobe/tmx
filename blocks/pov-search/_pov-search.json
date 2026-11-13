@@ -1,0 +1,123 @@
+{
+  "definitions": [
+    {
+      "title": "POV Search",
+      "id": "pov-search",
+      "model": "pov-search",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"pov-search\"><div><div><p>Placeholder</p></div><div><p>Browse Articles, Events & Multimedia</p></div></div><div><div><p>Search</p></div><div><p>Search</p></div></div><div><div><p>Category</p></div><div><p>Choose a Category</p></div></div><div><div><p>Categories</p></div><div><p>Clean Technology, Energy, Life Sciences, Mining, Utilities & Pipelines</p></div></div><div><div><p>Filter</p></div><div><p>Filter</p></div></div><div><div><p>Reset</p></div><div><p>Reset</p></div></div><div><div><p>Load More</p></div><div><p>Load More</p></div></div><div><div><p>No Results</p></div><div><p>No POVs match your search.</p></div></div><div><div><p>Page Size</p></div><div><p>6</p></div></div></div>",
+          "fields": [
+            {
+              "name": "query_placeholder",
+              "selector": "div:nth-child(1)>div:nth-child(2)"
+            },
+            {
+              "name": "query_search",
+              "selector": "div:nth-child(2)>div:nth-child(2)"
+            },
+            {
+              "name": "filter_category",
+              "selector": "div:nth-child(3)>div:nth-child(2)"
+            },
+            {
+              "name": "filter_categories",
+              "selector": "div:nth-child(4)>div:nth-child(2)"
+            },
+            {
+              "name": "filter_filter",
+              "selector": "div:nth-child(5)>div:nth-child(2)"
+            },
+            {
+              "name": "filter_reset",
+              "selector": "div:nth-child(6)>div:nth-child(2)"
+            },
+            {
+              "name": "results_loadMore",
+              "selector": "div:nth-child(7)>div:nth-child(2)"
+            },
+            {
+              "name": "results_noResults",
+              "selector": "div:nth-child(8)>div:nth-child(2)"
+            },
+            {
+              "name": "results_pageSize",
+              "selector": "div:nth-child(9)>div:nth-child(2)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "pov-search",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "query_placeholder",
+          "label": "Placeholder",
+          "description": "Search field placeholder"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "query_search",
+          "label": "Search",
+          "description": "Search button label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "filter_category",
+          "label": "Category",
+          "description": "First (all categories) option"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "filter_categories",
+          "label": "Categories",
+          "description": "Comma-separated categories; a POV matches when a tag or its text names the category"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "filter_filter",
+          "label": "Filter",
+          "description": "Filter button label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "filter_reset",
+          "label": "Reset",
+          "description": "Reset button label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "results_loadMore",
+          "label": "Load More",
+          "description": "Load-more button label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "results_noResults",
+          "label": "No Results",
+          "description": "Message when nothing matches"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "results_pageSize",
+          "label": "Page Size",
+          "description": "Results per page"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

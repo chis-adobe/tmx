@@ -1,11 +1,4 @@
-/* news-and-insights design tokens */
+/* news-and-insights design tokens (card styles: styles/pov-card.css) */
 :root {
   --news-card-min-width: 240px;
-  --news-card-background: var(--background-color);
-  --news-card-shadow: 0 2px 8px rgb(0 0 0 / 12%);
-  --news-card-shadow-hover: 0 6px 18px rgb(0 0 0 / 20%);
-  --news-card-image-ratio: 16 / 9;
-  --news-card-title-size: var(--body-font-size-m);
-  --news-featured-title-size: var(--heading-font-size-m);
-  --news-tag-color: var(--link-color);
 }
