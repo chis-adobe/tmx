@@ -35,15 +35,11 @@ body.pov main .pov-byline {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-xs) var(--spacing-s);
-  margin-bottom: var(--spacing-l);
+  gap: var(--spacing-xs);
+  margin: 0 0 var(--spacing-l);
   font-size: var(--body-font-size-xs);
-  color: var(--dark-color);
-}
-
-body.pov main .pov-byline p {
-  margin: 0;
   font-weight: 600;
+  color: var(--dark-color);
 }
 
 body.pov main .pov-byline-date:not(:last-child)::after {
@@ -51,12 +47,7 @@ body.pov main .pov-byline-date:not(:last-child)::after {
   margin-left: var(--spacing-s);
 }
 
-body.pov main .pov-byline-tags {
-  display: flex;
-  gap: var(--spacing-xs);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+body.pov main .pov-byline-tag {
   font-weight: 700;
   color: var(--link-color);
 }

@@ -26,29 +26,28 @@ function linkCell(href) {
   return cell;
 }
 
-/** "date | tags" line built from page metadata, placed right after the h1. */
+/**
+ * "date | tags" line built from page metadata, placed right after the h1. It is a paragraph
+ * (default content), so page decoration does not mistake it for a block.
+ */
 function addByline(h1) {
   const date = getMetadata('date');
   const tags = splitTags(getMetadata('article:tag') || getMetadata('tags'));
   if (!date && !tags.length) return;
-  const byline = document.createElement('div');
+  const byline = document.createElement('p');
   byline.className = 'pov-byline';
   if (date) {
-    const p = document.createElement('p');
-    p.className = 'pov-byline-date';
-    p.textContent = date;
-    byline.append(p);
+    const span = document.createElement('span');
+    span.className = 'pov-byline-date';
+    span.textContent = date;
+    byline.append(span);
   }
-  if (tags.length) {
-    const ul = document.createElement('ul');
-    ul.className = 'pov-byline-tags';
-    tags.forEach((tag) => {
-      const li = document.createElement('li');
-      li.textContent = tag;
-      ul.append(li);
-    });
-    byline.append(ul);
-  }
+  tags.forEach((tag) => {
+    const span = document.createElement('span');
+    span.className = 'pov-byline-tag';
+    span.textContent = tag;
+    byline.append(span);
+  });
   h1.after(byline);
 }
 
