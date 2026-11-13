@@ -7,6 +7,7 @@
  * <head>: og:title, description, og:image, date, article:tag (tags) and author.
  * Tags are kept as taxonomy keys (scripts/taxonomy.js) and shown as "#Label" on cards.
  */
+import { getMetadata } from './aem.js';
 import { createPicture, resolveContentPath } from './scripts.js';
 import { formatTag, loadTaxonomy, tagKeys } from './taxonomy.js';
 
@@ -98,7 +99,8 @@ function loadFromPage(path) {
         if (!html) return null;
         // parsed inertly: scripts never run, only meta values and the h1 text are read
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const meta = (name) => doc.head.querySelector(`meta[name="${name}"], meta[property="${name}"]`)?.content || '';
+        // getMetadata joins repeated tags (Edge Delivery writes one article:tag per tag)
+        const meta = (name) => getMetadata(name, doc);
         const title = meta('og:title') || doc.querySelector('h1')?.textContent.trim() || '';
         if (!title) return null;
         return toPov({

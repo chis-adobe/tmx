@@ -58,7 +58,12 @@ export function loadTaxonomy() {
  * @returns {string[]}
  */
 export function tagKeys(value) {
-  const text = String(value || '').replace(/#/g, '').trim();
+  let raw = Array.isArray(value) ? value.join(',') : String(value || '');
+  // the query index can store several tags as a JSON list ('["pov","life-sciences"]')
+  if (raw.trim().startsWith('[')) {
+    try { raw = [].concat(JSON.parse(raw)).join(','); } catch { /* use as written */ }
+  }
+  const text = raw.replace(/#/g, '').trim();
   if (!text) return [];
   // commas separate tags when present; otherwise spaces do, unless the whole value is one
   // known tag (e.g. "Life Sciences")
