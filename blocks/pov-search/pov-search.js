@@ -149,6 +149,14 @@ export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   input.value = params.get('q') || '';
   const category = tagKeys(params.get('category'))[0] || '';
+  // a tag link can name an approved tag the authored category list leaves out: offer it too
+  if (category && ![...select.options].some((o) => o.value === category)
+    && tagLabel(category) !== category) {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = tagLabel(category);
+    select.append(option);
+  }
   if ([...select.options].some((o) => o.value === category)) select.value = category;
 
   form.addEventListener('submit', (e) => {
