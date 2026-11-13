@@ -11,7 +11,8 @@
  */
 import { getMetadata } from '../../scripts/aem.js';
 import { buildFragmentBlock, cellHasValue, readKeyedRows } from '../../scripts/scripts.js';
-import { formatTag, loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
+import { loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
+import { tagLink } from '../../scripts/pov.js';
 
 export const metadata = {
   nav: '/fragments/header',
@@ -30,7 +31,8 @@ function linkCell(href) {
 /**
  * "date | tags" line built from page metadata, placed right after the h1. It is a paragraph
  * (default content), so page decoration does not mistake it for a block. Tags are taxonomy keys,
- * shown as TMX hashtags ("#Mining") once the labels have loaded, without delaying the page.
+ * shown as TMX hashtags ("#Mining") linking to the POV search, once the labels have loaded,
+ * without delaying the page.
  */
 function addByline(h1) {
   const date = getMetadata('date');
@@ -47,12 +49,8 @@ function addByline(h1) {
   h1.after(byline);
   if (!tagsValue) return;
   loadTaxonomy().then(() => {
-    tagKeys(tagsValue).forEach((key) => {
-      const span = document.createElement('span');
-      span.className = 'pov-byline-tag';
-      span.textContent = formatTag(key, { hash: true });
-      byline.append(span);
-    });
+    // each tag links to the POV search with that tag's category preselected
+    tagKeys(tagsValue).forEach((key) => byline.append(tagLink(key, 'pov-byline-tag')));
   });
 }
 

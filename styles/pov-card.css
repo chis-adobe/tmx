@@ -6,22 +6,29 @@
  *   .pov-card-small   horizontal: image beside title, date, tags
  */
 .pov-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
   background-color: var(--background-color);
   color: var(--text-color);
+}
+
+/* the title link covers the whole card, so the card opens the POV */
+.pov-card .pov-card-link {
+  color: inherit;
   text-decoration: none;
 }
 
-.pov-card:hover,
-.pov-card:focus-visible {
-  text-decoration: none;
+.pov-card .pov-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
 }
 
-.pov-card:hover .pov-card-title,
-.pov-card:focus-visible .pov-card-title {
+.pov-card:hover .pov-card-link,
+.pov-card .pov-card-link:focus-visible {
   text-decoration: underline;
 }
 
@@ -68,7 +75,19 @@
   list-style: none;
   font-size: 13px;
   font-weight: 700;
+}
+
+/* tag links sit above the card link and open the POV search filtered by the tag */
+.pov-card .pov-card-tags a {
+  position: relative;
+  z-index: 1;
   color: var(--link-color);
+}
+
+.pov-card .pov-card-tags a:hover,
+.pov-card .pov-card-tags a:focus-visible {
+  color: var(--link-hover-color);
+  text-decoration: underline;
 }
 
 .pov-card .pov-card-description {

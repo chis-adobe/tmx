@@ -51,3 +51,9 @@ body.pov main .pov-byline-tag {
   font-weight: 700;
   color: var(--link-color);
 }
+
+body.pov main .pov-byline-tag:hover,
+body.pov main .pov-byline-tag:focus-visible {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}

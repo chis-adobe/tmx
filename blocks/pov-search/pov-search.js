@@ -21,7 +21,8 @@ import { loadTaxonomy, tagKeys, tagLabel } from '../../scripts/taxonomy.js';
  *   No Results   message shown when nothing matches
  *   Page Size    results shown per page (default 6)
  *   Source       optional query index path (default /povs/query-index.json)
- * The search state is kept in the URL (?q=…&category=…) so results can be shared.
+ * The search state is kept in the URL (?q=…&category=…) so results can be shared; tag links on
+ * POV cards and bylines open this page with ?category=<tag key> preselected.
  */
 
 const DEFAULT_PAGE_SIZE = 6;
@@ -159,4 +160,8 @@ export default async function decorate(block) {
   more.addEventListener('click', showNext);
 
   run();
+  // opened from a tag link (or a shared search): bring the results into view
+  if (params.has('category') || params.has('q')) {
+    requestAnimationFrame(() => block.scrollIntoView({ block: 'start' }));
+  }
 }

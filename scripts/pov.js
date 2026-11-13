@@ -13,6 +13,9 @@ import { formatTag, loadTaxonomy, tagKeys } from './taxonomy.js';
 
 export const POV_INDEX = '/povs/query-index.json';
 
+/** The POV landing page, which holds the POV Search block. */
+export const POV_SEARCH_PAGE = '/povs/';
+
 const indexCache = new Map();
 const pageCache = new Map();
 
@@ -151,11 +154,38 @@ function textEl(tag, className, text) {
   return el;
 }
 
-/** Tag keys as TMX hashtags ("#Mining"), labels from the taxonomy. */
+/**
+ * URL of the POV search with a tag's category preselected (the POV Search block reads
+ * ?category=<tag key>).
+ * @param {string} key Tag key
+ * @returns {string}
+ */
+export function tagSearchUrl(key) {
+  return `${resolveContentPath(POV_SEARCH_PAGE)}?category=${encodeURIComponent(key)}`;
+}
+
+/**
+ * A tag as a TMX hashtag ("#Mining") linking to the POV search filtered by that tag.
+ * @param {string} key Tag key
+ * @param {string} [className]
+ * @returns {HTMLAnchorElement}
+ */
+export function tagLink(key, className = '') {
+  const a = document.createElement('a');
+  if (className) a.className = className;
+  a.href = tagSearchUrl(key);
+  a.textContent = formatTag(key, { hash: true });
+  return a;
+}
+
 function tagList(tags) {
   const ul = document.createElement('ul');
   ul.className = 'pov-card-tags';
-  tags.forEach((key) => ul.append(textEl('li', '', formatTag(key, { hash: true }))));
+  tags.forEach((key) => {
+    const li = document.createElement('li');
+    li.append(tagLink(key));
+    ul.append(li);
+  });
   return ul;
 }
 
@@ -172,43 +202,53 @@ const LAYOUTS = {
 };
 
 /**
- * Renders a POV card (a link wrapping image and text). With no data, renders a plain link card
- * from the authored link so a missing reference never breaks the page.
+ * Renders a POV card. The title link covers the whole card (so the card opens the POV), and the
+ * tags are their own links on top of it, each opening the POV search filtered by that tag.
+ * With no data, renders a plain link card from the authored link so a missing reference never
+ * breaks the page.
  * @param {object|null} pov Card data from loadPov / loadPovIndex
  * @param {object} options
  * @param {'teaser'|'large'|'small'} options.layout
  * @param {number} options.headingLevel
  * @param {HTMLAnchorElement} [options.fallbackLink]
  * @param {boolean} [options.eager] Load the image eagerly (above the fold)
- * @returns {HTMLAnchorElement}
+ * @returns {HTMLElement}
  */
 export function renderPovCard(pov, {
   layout = 'small', headingLevel = 3, fallbackLink, eager = false,
 } = {}) {
-  const a = document.createElement('a');
-  a.className = `pov-card pov-card-${layout}`;
-  a.href = pov ? resolveContentPath(pov.path) : fallbackLink?.href || '#';
+  const card = document.createElement('article');
+  card.className = `pov-card pov-card-${layout}`;
 
   if (pov?.image) {
     const media = document.createElement('div');
     media.className = 'pov-card-image';
     const width = layout === 'small' ? '400' : '750';
     media.append(createPicture(pov.image, '', eager, [{ width }]));
-    a.append(media);
+    card.append(media);
   }
 
   const body = document.createElement('div');
   body.className = 'pov-card-body';
   const title = pov?.title || fallbackLink?.textContent.trim() || '';
   (pov ? LAYOUTS[layout] : ['title']).forEach((field) => {
-    if (field === 'title') body.append(textEl(`h${headingLevel}`, 'pov-card-title', title));
+    if (field === 'title') {
+      const heading = document.createElement(`h${headingLevel}`);
+      heading.className = 'pov-card-title';
+      const link = document.createElement('a');
+      link.className = 'pov-card-link';
+      link.href = pov ? resolveContentPath(pov.path) : fallbackLink?.href || '#';
+      link.textContent = title;
+      heading.append(link);
+      body.append(heading);
+    }
     if (field === 'tags' && pov.tags.length) body.append(tagList(pov.tags));
     if (field === 'date' && pov.date) body.append(textEl('p', 'pov-card-date', pov.date));
     if (field === 'description' && pov.description) body.append(textEl('p', 'pov-card-description', pov.description));
   });
-  a.append(body);
-  if (!pov) a.classList.add('pov-card-fallback');
-  return a;
+  card.append(body);
+  if (!pov) card.classList.add('pov-card-fallback');
+  return card;
 }
 
 /**

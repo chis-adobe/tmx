@@ -1,5 +1,6 @@
 import { toClassName } from '../../scripts/aem.js';
-import { formatTag, loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
+import { loadTaxonomy, tagKeys } from '../../scripts/taxonomy.js';
+import { tagLink } from '../../scripts/pov.js';
 
 /**
  * POV Metadata block — the key/value table at the top of a POV article.
@@ -22,7 +23,8 @@ function tagList(value) {
   list.className = 'pov-metadata-tag-list';
   tags.forEach((key) => {
     const li = document.createElement('li');
-    li.textContent = formatTag(key, { hash: true });
+    // links to the POV search with this tag preselected
+    li.append(tagLink(key));
     list.append(li);
   });
   return list;
