@@ -22,6 +22,8 @@ import { applySectionBackgroundDecorations, decorateNestedSections } from './fea
 import loadThemeSpreadSheetConfig from './feature-flags/theme-sheet.js';
 import { decorateSpanTags } from './feature-flags/bracket-tags.js';
 import { isVideoLink } from './utils.js';
+// eslint-disable-next-line import/no-cycle
+import { getLocale, localizePath, redirectToPreferredLocale } from './locale.js';
 import FEATURES from './feature-flags/features.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
@@ -134,7 +136,9 @@ const LOCAL_CONTENT_PREFIX = '/content';
 export function resolveContentPath(path) {
   const local = window.location.pathname.startsWith(`${LOCAL_CONTENT_PREFIX}/`);
   if (local && path.startsWith('/') && !path.startsWith(`${LOCAL_CONTENT_PREFIX}/`)) {
-    return `${LOCAL_CONTENT_PREFIX}${path === '/' ? '/index' : path}`;
+    // folder pages (/, /fr/) are the folder's index document
+    const doc = path.endsWith('/') ? `${path}index` : path;
+    return `${LOCAL_CONTENT_PREFIX}${doc}`;
   }
   return path;
 }
@@ -598,7 +602,12 @@ async function loadTemplate(main) {
       import(`${base}.js`),
       loadCSS(`${base}.css`),
     ]);
-    Object.entries(mod.metadata || {}).forEach(([name, value]) => setDefaultMetadata(name, value));
+    // template defaults are site paths (fragments); use the page language's versions
+    const locale = getLocale();
+    Object.entries(mod.metadata || {}).forEach(([name, value]) => setDefaultMetadata(
+      name,
+      typeof value === 'string' && value.startsWith('/') ? localizePath(value, locale) : value,
+    ));
     if (typeof mod.default === 'function') await mod.default(main);
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -613,7 +622,7 @@ async function loadTemplate(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  document.documentElement.lang = getLocale();
   if (isLibraryDoc()) document.body.classList.add('library-doc');
   decorateTemplateAndTheme();
   await loadTemplate(doc.querySelector('main'));
@@ -701,6 +710,8 @@ async function loadSidekick() {
 }
 
 export async function loadPage() {
+  // French-locale visitors on an English page go to its French version, before anything renders
+  if (await redirectToPreferredLocale()) return;
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

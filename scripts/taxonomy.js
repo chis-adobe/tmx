@@ -3,11 +3,15 @@
  * (/docs/library/blocks.json), as "Label=key" pairs separated by "|" in the row whose key is
  * "tags". DA uses that row to autocomplete Tags fields; the site uses it to show labels.
  *
+ * Translated pages read a "tags-<locale>" row (e.g. tags-fr) with the same keys and translated
+ * labels; tags it does not list keep their English label.
+ *
  * Content stores tag keys only (e.g. "tsx30, mining"), never a "#": where TMX shows hashtags,
  * the code adds the "#" when it displays the label (formatTag(key, { hash: true })).
  */
 import { toClassName } from './aem.js';
 import { resolveContentPath } from './scripts.js';
+import { DEFAULT_LOCALE, getLocale } from './locale.js';
 
 const OPTIONS_SHEET = '/docs/library/blocks.json';
 const TAGS_KEY = 'tags';
@@ -42,8 +46,15 @@ export function loadTaxonomy() {
     loading = fetch(`${resolveContentPath(OPTIONS_SHEET.replace(/\.json$/, ''))}.json?sheet=options`)
       .then((resp) => (resp.ok ? resp.json() : { data: [] }))
       .then((json) => {
-        const row = (json.data || []).find((r) => toClassName(r.key) === TAGS_KEY);
-        parseOptionValues(row?.values).forEach(([key, label]) => labels.set(key, label));
+        const rows = json.data || [];
+        const row = (key) => rows.find((r) => toClassName(r.key) === key);
+        parseOptionValues(row(TAGS_KEY)?.values).forEach(([key, label]) => labels.set(key, label));
+        // translated pages: "tags-<locale>" row holds the same keys with translated labels
+        const locale = getLocale();
+        if (locale !== DEFAULT_LOCALE) {
+          parseOptionValues(row(`${TAGS_KEY}-${locale}`)?.values)
+            .forEach(([key, label]) => labels.set(key, label));
+        }
         return labels;
       })
       .catch(() => labels);

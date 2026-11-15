@@ -1,5 +1,8 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { resolveContentPath } from '../../scripts/scripts.js';
+import {
+  DEFAULT_LOCALE, LOCALES, currentSitePath, localizePath, pageExists, rememberLocale,
+} from '../../scripts/locale.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -118,6 +121,39 @@ function getDirectTextContent(menuItem) {
     .filter((n) => n.nodeType === Node.TEXT_NODE)
     .map((n) => n.textContent)
     .join(' ');
+}
+
+/**
+ * Language of a language-switch link: a link to a language's home ("/", "/en", "/fr", on this
+ * site or tmx.com), else null.
+ */
+function switchLocale(a) {
+  const segments = new URL(a.href).pathname.split('/').filter(Boolean);
+  const first = segments[0] || DEFAULT_LOCALE;
+  return segments.length <= 1 && LOCALES.includes(first) ? first : null;
+}
+
+/**
+ * Points the header's language links at this page in that language (or that language's home
+ * when the page is not translated) and remembers the visitor's choice when they use one.
+ * @param {Element} navTools
+ */
+function decorateLanguageLinks(navTools) {
+  const path = currentSitePath();
+  navTools.querySelectorAll('a[href]').forEach((a) => {
+    const locale = switchLocale(a);
+    if (!locale) return;
+    const home = localizePath('/', locale);
+    const counterpart = localizePath(path, locale);
+    a.href = resolveContentPath(home);
+    a.lang = locale;
+    a.hreflang = locale;
+    a.removeAttribute('target');
+    pageExists(counterpart).then((exists) => {
+      if (exists) a.href = resolveContentPath(counterpart);
+    });
+    a.addEventListener('click', () => rememberLocale(locale));
+  });
 }
 
 const MAX_BREADCRUMB_DEPTH = 20;
@@ -254,6 +290,7 @@ export default async function decorate(block) {
     if (search && search.textContent === '') {
       search.setAttribute('aria-label', 'Search');
     }
+    decorateLanguageLinks(navTools);
   }
 
   // hamburger for mobile
