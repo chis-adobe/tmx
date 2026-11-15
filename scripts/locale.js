@@ -4,7 +4,8 @@
  *
  * French-locale visitors who land on an English page are sent to its French version when one
  * exists. Choosing a language with the header's language link is remembered and overrides the
- * browser language from then on.
+ * browser language from then on. For testing, ?locale=fr on an English page behaves as a French
+ * browser for that visit (nothing is remembered).
  */
 // eslint-disable-next-line import/no-cycle
 import { isLibraryDoc, resolveContentPath } from './scripts.js';
@@ -16,6 +17,8 @@ export const LOCALES = ['en', 'fr'];
 const FOLDERS = { fr: { povs: 'pov' } };
 
 const PREFERENCE_KEY = 'tmx-locale';
+/** Query parameter to test the redirect without changing browser settings (?locale=fr). */
+const LOCALE_PARAM = 'locale';
 const LOCAL_CONTENT_PREFIX = '/content';
 
 /** The site path of the current page (without the local preview's /content prefix). */
@@ -77,8 +80,19 @@ function storedLocale() {
   }
 }
 
-/** The visitor's preferred language: their remembered choice, else the browser's language. */
+/** Test override: ?locale=fr (or en) acts as that browser language for this visit only. */
+function queryLocale() {
+  const value = new URLSearchParams(window.location.search).get(LOCALE_PARAM)?.toLowerCase();
+  return LOCALES.includes(value) ? value : null;
+}
+
+/**
+ * The visitor's preferred language: the ?locale= test override, else their remembered choice,
+ * else the browser's language.
+ */
 export function preferredLocale() {
+  const override = queryLocale();
+  if (override) return override;
   const stored = storedLocale();
   if (stored) return stored;
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
