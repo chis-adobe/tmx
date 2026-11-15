@@ -40,3 +40,32 @@ body.press-release main .press-release-contact .author .author-name {
 body.press-release main .press-release-contact .author .author-title {
   margin-top: 0;
 }
+
+/* "date | tags" line and blurb under the headline (pages with details in page metadata) */
+body.press-release main .press-release-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-s);
+  margin: 0 0 var(--spacing-s);
+  font-size: var(--body-font-size-xs);
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+body.press-release main .press-release-meta-date:not(:last-child)::after {
+  content: '|';
+  margin-left: var(--spacing-s);
+}
+
+body.press-release main .press-release-meta-tag {
+  font-weight: 700;
+  color: var(--link-color);
+}
+
+body.press-release main .press-release-blurb {
+  margin: 0 0 var(--spacing-l);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--heading-color);
+}
