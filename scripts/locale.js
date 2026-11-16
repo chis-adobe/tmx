@@ -1,6 +1,6 @@
 /**
  * Site languages. English pages live at the site root; translations live in a language folder
- * (/fr/...). A folder may be renamed in a translation (English /povs/ is French /fr/pov/).
+ * that mirrors the English paths (English /povs/x is French /fr/povs/x).
  *
  * French-locale visitors who land on an English page are sent to its French version when one
  * exists. Choosing a language with the header's language link is remembered and overrides the
@@ -12,9 +12,6 @@ import { isLibraryDoc, resolveContentPath } from './scripts.js';
 
 export const DEFAULT_LOCALE = 'en';
 export const LOCALES = ['en', 'fr'];
-
-/** English top-level folder -> its name in each translation. */
-const FOLDERS = { fr: { povs: 'pov' } };
 
 const PREFERENCE_KEY = 'tmx-locale';
 /** Query parameter to test the redirect without changing browser settings (?locale=fr). */
@@ -43,24 +40,15 @@ export function getLocale(path = currentSitePath()) {
 
 /**
  * The same page's path in another language (whether or not that page exists).
- * e.g. ('/povs/my-pov', 'fr') -> '/fr/pov/my-pov'; ('/fr/', 'en') -> '/'.
+ * e.g. ('/povs/my-pov', 'fr') -> '/fr/povs/my-pov'; ('/fr/', 'en') -> '/'.
  * @param {string} path Site path in any language
  * @param {string} locale Target language
  * @returns {string}
  */
 export function localizePath(path, locale) {
-  const from = getLocale(path);
   let segments = path.split('/').slice(1);
-  if (from !== DEFAULT_LOCALE) {
-    segments = segments.slice(1);
-    const english = Object.entries(FOLDERS[from] || {}).find(([, name]) => name === segments[0]);
-    if (english) [segments[0]] = english;
-  }
-  if (locale !== DEFAULT_LOCALE) {
-    const folder = FOLDERS[locale]?.[segments[0]];
-    if (folder) segments[0] = folder;
-    segments = [locale, ...segments];
-  }
+  if (getLocale(path) !== DEFAULT_LOCALE) segments = segments.slice(1);
+  if (locale !== DEFAULT_LOCALE) segments = [locale, ...segments];
   return `/${segments.join('/')}`;
 }
 
