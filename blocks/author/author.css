@@ -63,6 +63,11 @@
   font-size: var(--body-font-size-s);
 }
 
+/* a link inside the role text is underlined so it doesn't rely on colour alone */
+.author .author-title a {
+  text-decoration: underline;
+}
+
 .author .author-link {
   margin-top: var(--spacing-s);
   font-size: var(--body-font-size-s);

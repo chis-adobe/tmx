@@ -387,15 +387,32 @@ export function decorateExternalLinks(element) {
   });
 }
 
+/**
+ * Accessible name for a link with no text of its own: an icon's name, an image's alt text, or
+ * the visible text next to it in the same list item / paragraph (e.g. an icon link followed by
+ * its label "Webcast").
+ * @param {HTMLAnchorElement} link
+ * @returns {string}
+ */
+function linkFallbackLabel(link) {
+  const icon = link.querySelector('span.icon');
+  if (icon) return icon.classList[1]?.split('-')[1] || '';
+  const alt = [...link.querySelectorAll('img[alt]')].map((img) => img.alt.trim()).find(Boolean);
+  if (alt) return alt;
+  const container = link.closest('li') || link.parentElement?.closest('p, div');
+  if (!container) return '';
+  const clone = container.cloneNode(true);
+  clone.querySelectorAll('a').forEach((a) => a.remove());
+  return clone.textContent.replace(/\s+/g, ' ').trim();
+}
+
 function a11yLinks(main) {
   const links = main.querySelectorAll('a');
   links.forEach((link) => {
-    let label = link.textContent;
-    if (!label && link.querySelector('span.icon')) {
-      const icon = link.querySelector('span.icon');
-      label = icon ? icon.classList[1]?.split('-')[1] : label;
-    }
-    link.setAttribute('aria-label', label);
+    const label = link.textContent.trim() || linkFallbackLabel(link);
+    // never set an empty name: it would hide the link's content from screen readers
+    if (label) link.setAttribute('aria-label', label);
+    else link.removeAttribute('aria-label');
   });
 }
 
@@ -416,7 +433,8 @@ function autolinkModals(doc) {
  */
 export function decorateButtons(main) {
   main.querySelectorAll('p a[href]').forEach((a) => {
-    a.title = a.title || a.textContent;
+    // no empty title on links without text (e.g. icon links)
+    if (!a.title && a.textContent.trim()) a.title = a.textContent.trim();
     const p = a.closest('p');
     const text = a.textContent.trim();
 

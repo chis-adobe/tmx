@@ -5,9 +5,10 @@
   --carousel-content-padding: var(--spacing-s); /* @boilerplate */
   --carousel-content-color: white; /* @boilerplate */
   --carousel-content-background: transparent;
-  --carousel-indicators-gap: 6px 12px; /* @boilerplate */
+  --carousel-indicators-gap: 0; /* the 24px touch targets space the dots */
   --carousel-indicators-padding: 12px; /* @boilerplate */
-  --carousel-indicator-size: 10px;
+  --carousel-indicator-size: 10px; /* the visible dot */
+  --carousel-indicator-target-size: 24px; /* the touch target (WCAG 2.5.8) */
   --carousel-indicator-background: rgb(255 255 255 / 60%);
   --carousel-indicator-active-background: var(--brand-secondary);
   --carousel-nav-inset: 12px; /* @boilerplate */

@@ -94,20 +94,31 @@
   line-height: 0; /* @boilerplate */
 }
 
-.carousel .carousel-slide-indicator button { /* @boilerplate */
-  width: var(--carousel-indicator-size); /* @boilerplate */
-  height: var(--carousel-indicator-size); /* @boilerplate */
+.carousel .carousel-slide-indicator button {
+  /* a 24px touch target with the small dot drawn in its centre */
+  display: grid;
+  place-items: center;
+  width: var(--carousel-indicator-target-size);
+  height: var(--carousel-indicator-target-size);
   margin: 0; /* @boilerplate */
   padding: 0; /* @boilerplate */
   border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.carousel .carousel-slide-indicator button::before {
+  content: '';
+  width: var(--carousel-indicator-size);
+  height: var(--carousel-indicator-size);
   border-radius: 2px;
   background-color: var(--carousel-indicator-background);
   transition: background-color var(--carousel-transition-duration); /* @boilerplate */
 }
 
-.carousel .carousel-slide-indicator button:disabled,
-.carousel .carousel-slide-indicator button:hover,
-.carousel .carousel-slide-indicator button:focus-visible { /* @boilerplate */
+.carousel .carousel-slide-indicator button:disabled::before,
+.carousel .carousel-slide-indicator button:hover::before,
+.carousel .carousel-slide-indicator button:focus-visible::before { /* @boilerplate */
   background-color: var(--carousel-indicator-active-background); /* @boilerplate */
 }
 

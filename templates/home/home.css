@@ -144,6 +144,6 @@ body.home main .columns h3 {
 /* the bold part of the brand statement is the teal accent line */
 body.home main > .section.statement h1 strong {
   display: block;
-  color: var(--brand-secondary);
+  color: var(--brand-secondary-text);
   font-weight: inherit;
 }
