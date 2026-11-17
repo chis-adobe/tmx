@@ -81,6 +81,11 @@
 .pov-card .pov-card-tags a {
   position: relative;
   z-index: 1;
+
+  /* 24px tall touch target (WCAG 2.5.8) without changing the text size */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--link-color);
 }
 

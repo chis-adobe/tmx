@@ -36,6 +36,35 @@ function withTableBlocks(document, node) {
   return cloneContent(document, node);
 }
 
+/**
+ * Keeps a valid heading order under the page's h1: if the article's top sub-heading level is
+ * deeper than h2 (some source articles start at h3), every heading is moved up by the gap.
+ * @param {Document} document
+ * @param {Node[]} nodes Article body nodes (already cloned)
+ * @returns {Node[]}
+ */
+function normalizeHeadings(document, nodes) {
+  const headings = nodes.flatMap((n) => {
+    if (n.nodeType !== 1) return [];
+    const own = /^H[2-6]$/.test(n.tagName) ? [n] : [];
+    return [...own, ...n.querySelectorAll('h2, h3, h4, h5, h6')];
+  });
+  if (!headings.length) return nodes;
+  const top = Math.min(...headings.map((h) => Number(h.tagName[1])));
+  const shift = top - 2;
+  if (shift <= 0) return nodes;
+  const replaced = new Map();
+  headings.forEach((h) => {
+    const level = Math.max(2, Number(h.tagName[1]) - shift);
+    const next = document.createElement(`h${level}`);
+    [...h.attributes].forEach((attr) => next.setAttribute(attr.name, attr.value));
+    next.append(...h.childNodes);
+    h.replaceWith(next);
+    replaced.set(h, next);
+  });
+  return nodes.map((n) => replaced.get(n) || n);
+}
+
 /* ---------- article + author fragment ---------- */
 
 function authorFragment(document, authorBox) {
@@ -119,7 +148,7 @@ function article(document, id, url) {
         Summary: summary,
         Author: siteLink(document, authorPath),
       }),
-      ...intro.map((n) => withTableBlocks(document, n)),
+      ...normalizeHeadings(document, intro.map((n) => withTableBlocks(document, n))),
     ],
     footnotes.length ? [
       ...footnotes.map((n) => cloneContent(document, n)),

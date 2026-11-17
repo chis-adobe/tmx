@@ -1,5 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
-import { resolveContentPath } from '../../scripts/scripts.js';
+import { fetchPlaceholders, resolveContentPath } from '../../scripts/scripts.js';
 import {
   DEFAULT_LOCALE, LOCALES, currentSitePath, localizePath, pageExists, rememberLocale,
 } from '../../scripts/locale.js';
@@ -217,6 +217,18 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   return crumbs;
 }
 
+/**
+ * Names a landmark (e.g. the main navigation vs the breadcrumbs) for screen readers, with a label
+ * from the placeholders sheet, so pages with several <nav> elements can tell them apart.
+ * @param {Element} landmark
+ * @param {string} placeholderKey camelCased placeholders key
+ */
+function labelLandmark(landmark, placeholderKey) {
+  fetchPlaceholders().then((placeholders) => {
+    if (placeholders[placeholderKey]) landmark.setAttribute('aria-label', placeholders[placeholderKey]);
+  });
+}
+
 async function buildBreadcrumbs() {
   const breadcrumbs = document.createElement('nav');
   breadcrumbs.className = 'breadcrumbs';
@@ -239,6 +251,7 @@ async function buildBreadcrumbs() {
   }));
 
   breadcrumbs.append(ol);
+  labelLandmark(breadcrumbs, 'breadcrumbs');
   return breadcrumbs;
 }
 
@@ -257,6 +270,7 @@ export default async function decorate(block) {
   if (!fragment) return;
   const nav = document.createElement('nav');
   nav.id = 'nav';
+  labelLandmark(nav, 'navigation');
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools', 'search'];

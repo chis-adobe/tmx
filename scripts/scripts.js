@@ -148,18 +148,26 @@ let placeholdersPromise = null;
 /**
  * Fetches the site's placeholders sheet (/placeholders.json, columns Key and Text) once and
  * returns it as an object keyed by camelCased Key, e.g. { relatedDocument: 'Related Document:' }.
+ * On translated pages the language's own sheet (e.g. /fr/placeholders.json) overrides it.
  * Used for user-facing labels so no copy is hard-coded. Resolves to {} if the sheet is missing.
  * @returns {Promise<Object<string, string>>}
  */
 export function fetchPlaceholders() {
   if (!placeholdersPromise) {
-    placeholdersPromise = fetch(`${resolveContentPath('/placeholders')}.json`)
+    const readSheet = (path) => fetch(`${resolveContentPath(path)}.json`)
       .then((resp) => (resp.ok ? resp.json() : { data: [] }))
       .then((json) => Object.fromEntries((json.data || [])
         .filter((row) => row.Key && typeof row.Text === 'string')
         .map((row) => [toCamelCase(row.Key), row.Text])
         .filter(([key]) => isSafeObjectKey(key))))
       .catch(() => ({}));
+    // translated pages read their language's sheet (e.g. /fr/placeholders) over the main one,
+    // so labels not translated yet fall back to the main sheet
+    const localized = localizePath('/placeholders', getLocale());
+    placeholdersPromise = Promise.all([
+      readSheet('/placeholders'),
+      localized === '/placeholders' ? {} : readSheet(localized),
+    ]).then(([main, translated]) => ({ ...main, ...translated }));
   }
   return placeholdersPromise;
 }
