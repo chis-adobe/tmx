@@ -86,6 +86,15 @@
   z-index: 0; /* below the arrows and dots (z-index 1) */
 }
 
+/* the arrows' full-width row must not block clicks on the slide behind it; the arrows still work */
+.carousel .carousel-slides-container .carousel-navigation-buttons {
+  pointer-events: none;
+}
+
+.carousel .carousel-slides-container .carousel-navigation-buttons button {
+  pointer-events: auto;
+}
+
 .carousel .carousel-slide .carousel-slide-link:focus-visible {
   outline: 3px solid var(--carousel-content-color, #fff);
   outline-offset: -6px;
