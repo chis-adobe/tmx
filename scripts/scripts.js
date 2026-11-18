@@ -25,6 +25,18 @@ import { isVideoLink } from './utils.js';
 // eslint-disable-next-line import/no-cycle
 import { getLocale, localizePath, redirectToPreferredLocale } from './locale.js';
 import FEATURES from './feature-flags/features.js';
+import { runExperimentation, runExperimentationLazy } from './experiment-loader.js';
+
+/**
+ * AEM Experimentation plugin options (see scripts/experiment-loader.js).
+ * Production (aem.live or a custom domain) never shows the simulation panel; preview (*.page)
+ * and local development do.
+ */
+const experimentationConfig = {
+  isProd: () => !window.location.hostname.endsWith('.page')
+    && window.location.hostname !== 'localhost',
+  audiences: {},
+};
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -651,6 +663,8 @@ async function loadEager(doc) {
   document.documentElement.lang = getLocale();
   if (isLibraryDoc()) document.body.classList.add('library-doc');
   decorateTemplateAndTheme();
+  // A/B tests: swap in the selected variant's content before the template and decoration run
+  await runExperimentation(doc, experimentationConfig);
   await loadTemplate(doc.querySelector('main'));
   if (FEATURES.themeSheet) loadThemeSpreadSheetConfig();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
@@ -713,6 +727,9 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // experiment simulation panel (preview / local only)
+  runExperimentationLazy(doc, experimentationConfig);
 }
 
 /**

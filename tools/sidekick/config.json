@@ -17,6 +17,12 @@
       "title": "Quick Edit",
       "environments": [ "dev", "preview" ],
       "event": "quick-edit"
+    },
+    {
+      "id": "aem-experimentation",
+      "titleI18n": { "en": "Experimentation" },
+      "environments": [ "preview" ],
+      "event": "aem-experimentation-sidekick"
     }
   ]
 }
