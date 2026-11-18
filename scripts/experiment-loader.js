@@ -42,6 +42,46 @@ export async function runExperimentation(document, config) {
 }
 
 /**
+ * Conversion tracking for experiments (plugins/rum-conversion, adobe/aem-rum-conversion).
+ * Without it, any click on the page counts as a conversion. Two ways to be more specific:
+ *   - page Metadata, as documented by the plugin: Conversion Element (Link / Labeled Link / Form),
+ *     Conversion Link Labels, Conversion Name
+ *   - section metadata "Conversion Name": every link inside that section (e.g. a carousel's
+ *     calls to action) is tracked as that conversion, and nothing else in the section is
+ * Runs after the sections are decorated; loads nothing on pages without conversions.
+ * @param {Document} document
+ * @param {{ getMetadata: Function, toClassName: Function }} context helpers from aem.js
+ * @returns {Promise<void>}
+ */
+export async function runConversionTracking(document, context) {
+  const sections = [...document.querySelectorAll('main .section[data-conversion-name]')];
+  const pageLevel = !!context.getMetadata('conversion-element');
+  if (!sections.length && !pageLevel) return;
+
+  try {
+    // eslint-disable-next-line import/no-relative-packages
+    const { initConversionTracking } = await import('../plugins/rum-conversion/src/index.js');
+    if (pageLevel) await initConversionTracking.call(context, document);
+    sections.forEach((section) => {
+      const conversionName = section.dataset.conversionName.trim();
+      // the plugin's "Link" mode, scoped to this section and named after its metadata
+      const sectionContext = {
+        ...context,
+        getMetadata: (name) => {
+          if (name === 'conversion-element') return 'Link';
+          if (name === 'conversion-name') return conversionName;
+          return context.getMetadata(name);
+        },
+      };
+      initConversionTracking.call(sectionContext, section);
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load conversion tracking:', error);
+  }
+}
+
+/**
  * Loads the simulation panel (lazy). Preview / local only; production never loads it.
  * @param {Document} document
  * @param {Object} config experimentation options

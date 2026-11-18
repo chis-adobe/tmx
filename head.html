@@ -5,6 +5,14 @@
   move-to-http-header="true"
 />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<script nonce="aem">
+  /* pages running an A/B test record 1 in 10 visits in RUM (default 1 in 100), so results come sooner;
+     read when RUM starts, after all page metadata is in the head */
+  Object.defineProperty(window, 'SAMPLE_PAGEVIEWS_AT_RATE', {
+    configurable: true,
+    get: () => (document.head.querySelector('meta[name^="experiment"]') ? 'high' : undefined),
+  });
+</script>
 <script nonce="aem" src="/scripts/aem.js" type="module"></script>
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <link rel="stylesheet" href="/styles/styles.css"/>

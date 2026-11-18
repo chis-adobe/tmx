@@ -25,7 +25,7 @@ import { isVideoLink } from './utils.js';
 // eslint-disable-next-line import/no-cycle
 import { getLocale, localizePath, redirectToPreferredLocale } from './locale.js';
 import FEATURES from './feature-flags/features.js';
-import { runExperimentation, runExperimentationLazy } from './experiment-loader.js';
+import { runConversionTracking, runExperimentation, runExperimentationLazy } from './experiment-loader.js';
 
 /**
  * AEM Experimentation plugin options (see scripts/experiment-loader.js).
@@ -728,7 +728,8 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  // experiment simulation panel (preview / local only)
+  // experiment conversions (only on pages that define them) and simulation panel (preview only)
+  runConversionTracking(doc, { getMetadata, toClassName });
   runExperimentationLazy(doc, experimentationConfig);
 }
 
