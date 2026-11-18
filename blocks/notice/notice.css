@@ -1,0 +1,44 @@
+.notice {
+  position: relative;
+  max-width: 780px;
+  margin: var(--spacing-l) auto 0;
+  padding: var(--spacing-m) var(--spacing-m) var(--spacing-m) calc(var(--spacing-m) + 32px);
+  border-radius: 8px;
+  background-color: var(--notice-background, #f5f6f7);
+  color: var(--notice-text, #3d4251);
+  font-size: var(--body-font-size-xs);
+}
+
+.notice::before {
+  content: '';
+  position: absolute;
+  top: var(--spacing-m);
+  left: var(--spacing-m);
+  width: 20px;
+  height: 20px;
+  background: url('../../icons/au-notice.svg') center / contain no-repeat;
+}
+
+.notice .notice-content > :first-child {
+  margin-top: 0;
+}
+
+.notice .notice-content > :last-child {
+  margin-bottom: 0;
+}
+
+.notice h2,
+.notice h3 {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--body-font-size-s);
+  color: var(--notice-heading, #09263a);
+}
+
+.notice p {
+  margin: 0 0 var(--spacing-s);
+}
+
+.notice a {
+  font-weight: 700;
+  text-decoration: underline;
+}

@@ -28,6 +28,12 @@
         "https://www.tmx.com/en/newsroom/press-releases?id=1388"
       ],
       "blocks": []
+    },
+    {
+      "name": "australia",
+      "description": "TMX Australia Exchange pages (own header, footer and design): home page",
+      "urls": [],
+      "blocks": []
     }
   ]
 }

@@ -542,6 +542,8 @@ export function decorateSections(main) {
           styles.forEach((style) => section.classList.add(style));
         } else if (isSafeObjectKey(key)) {
           section.setAttribute(`data-${key}`, String(value ?? ''));
+          // "id" makes the section a link target (e.g. in-page "jump to" links: #overview)
+          if (key === 'id' && toClassName(String(value ?? ''))) section.id = toClassName(String(value));
         }
       });
       sectionMeta.parentNode.remove();
@@ -609,7 +611,7 @@ function removeLibraryMetadata(main) {
  * Templates that have code under /templates/{name}/. Only these names are loaded, so page
  * metadata can never point the loader at an arbitrary path.
  */
-const TEMPLATES = ['home', 'pov', 'press-release'];
+const TEMPLATES = ['home', 'pov', 'press-release', 'australia'];
 
 /**
  * Adds a <meta> to the head unless the page already defines it, so page metadata always
