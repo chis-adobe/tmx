@@ -79,6 +79,18 @@
   margin-top: var(--spacing-m);
 }
 
+/* "hide" slides: text is baked into the image, so the whole slide is the link */
+.carousel .carousel-slide .carousel-slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* below the arrows and dots (z-index 1) */
+}
+
+.carousel .carousel-slide .carousel-slide-link:focus-visible {
+  outline: 3px solid var(--carousel-content-color, #fff);
+  outline-offset: -6px;
+}
+
 .carousel .carousel-slide-indicators { /* @boilerplate */
   display: flex; /* @boilerplate */
   flex-wrap: wrap; /* @boilerplate */

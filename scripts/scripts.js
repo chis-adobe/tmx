@@ -562,6 +562,32 @@ export function decorateSections(main) {
 
 /* === END SECTIONS === */
 
+/**
+ * Local preview only: authors write icons as :icon-name: text (the form the DA editor keeps),
+ * which the Edge Delivery backend turns into <span class="icon icon-icon-name"> on preview/live.
+ * The local dev server serves the text as is, so convert it here so local pages show icons too.
+ * @param {Element} main The main element
+ */
+function decorateLocalIconNotation(main) {
+  if (window.location.hostname !== 'localhost') return;
+  const notation = /:([a-z][a-z0-9-]*):/g;
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) {
+    if (notation.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+    notation.lastIndex = 0;
+  }
+  nodes.forEach((node) => {
+    const parts = node.nodeValue.split(notation); // odd indexes are icon names
+    node.replaceWith(...parts.map((part, i) => {
+      if (i % 2 === 0) return part;
+      const span = document.createElement('span');
+      span.className = `icon icon-${part}`;
+      return span;
+    }));
+  });
+}
+
 
 /**
  * Decorates the main element.
@@ -569,6 +595,7 @@ export function decorateSections(main) {
  */
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
+  decorateLocalIconNotation(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
